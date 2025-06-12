@@ -1,0 +1,206 @@
+/*
+ * E-Bike Ratings - style.css
+ * Theme: Material 3 Expressive (Dark)
+ * Author: Gemini
+ */
+
+/* 1. Google Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* 2. CSS Variables (Material 3 Dark Expressive Theme) */
+:root {
+    /* Color Palette */
+    --color-primary: #D0BCFF; /* A light, vibrant purple for key elements */
+    --color-on-primary: #381E72;
+    --color-primary-container: #4A4458;
+    --color-on-primary-container: #EADDFF;
+
+    --color-surface-container-lowest: #0F0D13;
+    --color-surface-container-low: #1C1B1F; /* Main container background */
+    --color-surface-container: #211F24;
+    --color-surface-container-high: #2B292F;
+    --color-surface-container-highest: #36343A; /* Card and table row hover */
+
+    --color-surface: #141218; /* Main body background */
+    --color-on-surface: #E6E1E5; /* Main text color */
+    --color-on-surface-variant: #C9C5D0; /* Secondary text color */
+    --color-outline: #938F99;
+    --color-outline-variant: #49454F;
+    
+    --color-tertiary: #FABDCC; /* Accent color for ratings */
+
+    /* Typography */
+    --font-family-main: 'Roboto', sans-serif;
+
+    /* Shape & Radius */
+    --radius-small: 4px;
+    --radius-medium: 8px;
+    --radius-large: 16px; /* Expressive corner radius */
+    --radius-extra-large: 28px;
+
+    /* Shadows (Elevation) */
+    --shadow-1: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+    --shadow-2: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* 3. General Body & Reset Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family-main);
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    line-height: 1.6;
+    padding: 24px;
+}
+
+/* 4. Layout: Main Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    background-color: var(--color-surface-container-low);
+    border-radius: var(--radius-large);
+    border: 1px solid var(--color-outline-variant);
+}
+
+/* 5. Typography Styles */
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 8px;
+}
+
+h2 {
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: var(--color-on-surface);
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--color-outline-variant);
+    padding-bottom: 12px;
+}
+
+p {
+    margin-bottom: 16px;
+    color: var(--color-on-surface-variant);
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* 6. Header & Navigation */
+header {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+header .logo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    margin-bottom: 16px;
+}
+
+nav ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+    background-color: var(--color-surface-container);
+    border-radius: var(--radius-extra-large);
+}
+
+nav ul li a {
+    display: block;
+    padding: 10px 20px;
+    font-weight: 500;
+    color: var(--color-on-primary-container);
+    background-color: var(--color-primary-container);
+    border-radius: var(--radius-extra-large);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+nav ul li a:hover, nav ul li a.active {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    text-decoration: none;
+}
+
+/* 7. Table Styling */
+.ratings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 24px;
+    overflow: hidden;
+    border-radius: var(--radius-large);
+    border: 1px solid var(--color-outline-variant);
+}
+
+.ratings-table th, .ratings-table td {
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.ratings-table thead {
+    background-color: var(--color-surface-container);
+}
+
+.ratings-table th {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-on-surface);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ratings-table tbody tr {
+    transition: background-color 0.3s ease;
+}
+
+.ratings-table tbody tr:hover {
+    background-color: var(--color-surface-container-highest);
+}
+
+.ratings-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.ratings-table .model-name {
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--color-on-surface);
+}
+
+.ratings-table .model-summary {
+    font-size: 0.95rem;
+    color: var(--color-on-surface-variant);
+    max-width: 500px;
+}
+
+/* 8. Rating Badge */
+.rating-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-surface-container-lowest);
+    background-color: var(--color-tertiary);
+    border-radius: var(--radius-medium);
+    min-width: 60px;
+    text-align: center;
+}
