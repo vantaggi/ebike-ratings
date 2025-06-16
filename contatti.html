@@ -3,52 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contatti - E-Bike Component Guru</title>
+    <title>Contatti - E-Bike Ratings</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>E-Bike Component Guru</h1>
-        <nav>
-            </nav>
-    </header>
-
-    <main>
-        <section id="contact-form-section">
-            <h2>Mettiti in Contatto</h2>
-            <p>Hai domande, suggerimenti o hai bisogno di consulenza per la tua prossima e-bike o componente? Compila il modulo sottostante o utilizza i nostri recapiti.</p>
-            
-            <form id="contact-form">
-                <div>
-                    <label for="name">Nome:</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div>
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div>
-                    <label for="subject">Oggetto:</label>
-                    <input type="text" id="subject" name="subject">
-                </div>
-                <div>
-                    <label for="message">Messaggio:</label>
-                    <textarea id="message" name="message" rows="6" required></textarea>
-                </div>
-                <button type="submit" class="cta-button">Invia Messaggio</button>
-            </form>
-        </section>
-
-        <section id="contact-details">
-            <h3>Altri Modi per Contattarci</h3>
-            <p><strong>Email:</strong> info@ebikecomponentguru.example.com</p>
-            <p><strong>Telefono:</strong> +39 012 3456789 (Lun-Ven, 9:00-18:00)</p>
-            <p><strong>Indirizzo:</strong> Via della Tecnologia, 1 - 00100 Roma, Italia (Visite su appuntamento)</p>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2024 E-Bike Component Guru. Tutti i diritti riservati.</p>
-    </footer>
+    <div class="container">
+        <div id="header-placeholder"></div>
+        <main>
+            <section id="contact-form-section">
+                <h1>Mettiti in Contatto</h1>
+                <p>Hai domande, suggerimenti o hai bisogno di consulenza per la tua prossima e-bike o componente? Compila il modulo sottostante o utilizza i nostri recapiti.</p>
+                
+                <form id="contact-form" action="#" method="POST">
+                    <div class="form-group">
+                        <label for="name">Nome:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Oggetto:</label>
+                        <input type="text" id="subject" name="subject">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Messaggio:</label>
+                        <textarea id="message" name="message" rows="6" required></textarea>
+                    </div>
+                    <button type="submit" class="cta-button">Invia Messaggio</button>
+                </form>
+            </section>
+            <section id="contact-details">
+                <h2>Altri Modi per Contattarci</h2>
+                <p><strong>Email:</strong> info@ebikeratings.example.com</p>
+                <p><strong>Indirizzo:</strong> Via della Tecnologia, 1 - 00100 Roma, Italia (Visite su appuntamento)</p>
+            </section>
+        </main>
+        <div id="footer-placeholder"></div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>

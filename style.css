@@ -1,20 +1,25 @@
-/*
+/************************************************
+ *
  * E-Bike Ratings - style.css
- * Theme: Material 3 Expressive (Dark)
- * Author: Gemini
- * Comments in English as requested.
- */
+ * Theme: Material 3 Expressive (Dark) - Racing Red
+ *
+ ************************************************/
 
-/* 1. Google Font Import */
+
+/************************************************
+ * IMPORTS & VARIABLES
+ ************************************************/
+
+/* Google Font Import */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-/* 2. CSS Variables (Material 3 Dark Expressive Theme) */
+/* CSS Variables (Racing Red Theme) */
 :root {
     /* Color Palette */
-    --color-primary: #D0BCFF; /* A light, vibrant purple for key elements */
-    --color-on-primary: #381E72;
-    --color-primary-container: #4A4458;
-    --color-on-primary-container: #EADDFF;
+    --color-primary: #FF453A; /* Racing Red for key elements */
+    --color-on-primary: #400000;
+    --color-primary-container: #5C1D1A;
+    --color-on-primary-container: #FFDAD6;
 
     --color-surface-container-lowest: #0F0D13;
     --color-surface-container-low: #1C1B1F; /* Main container background */
@@ -28,7 +33,7 @@
     --color-outline: #938F99;
     --color-outline-variant: #49454F;
     
-    --color-tertiary: #FABDCC; /* Accent color for ratings */
+    --color-tertiary: #FFB86C; /* Vibrant Orange for ratings */
 
     /* Typography */
     --font-family-main: 'Roboto', sans-serif;
@@ -36,19 +41,19 @@
     /* Shape & Radius */
     --radius-small: 4px;
     --radius-medium: 8px;
-    --radius-large: 16px; /* Expressive corner radius */
+    --radius-large: 16px; 
     --radius-extra-large: 28px;
-
-    /* Shadows (Elevation) */
-    --shadow-1: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-    --shadow-2: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 2px 6px 2px rgba(0, 0, 0, 0.15);
 }
 
-/* 3. General Body & Reset Styles */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+
+/************************************************
+ * GENERAL & RESET STYLES
+ ************************************************/
+
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
 }
 
 body {
@@ -59,7 +64,11 @@ body {
     padding: 24px;
 }
 
-/* 4. Layout: Main Container */
+
+/************************************************
+ * LAYOUT & TYPOGRAPHY
+ ************************************************/
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -69,180 +78,107 @@ body {
     border: 1px solid var(--color-outline-variant);
 }
 
-/* 5. Typography Styles */
-h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--color-primary);
-    margin-bottom: 8px;
+h1 { font-size: 2.5rem; font-weight: 700; color: var(--color-primary); margin-bottom: 16px; }
+h2 { font-size: 1.75rem; font-weight: 500; color: var(--color-on-surface); margin-top: 32px; margin-bottom: 24px; border-bottom: 1px solid var(--color-outline-variant); padding-bottom: 12px; }
+p { margin-bottom: 16px; color: var(--color-on-surface-variant); }
+ul, ol { padding-left: 20px; margin-bottom: 16px; color: var(--color-on-surface-variant); }
+li { margin-bottom: 8px; }
+a { color: var(--color-primary); text-decoration: none; transition: all 0.2s ease-in-out; }
+a:hover { text-decoration: none; filter: brightness(1.2); }
+
+
+/************************************************
+ * HEADER & NAVIGATION
+ ************************************************/
+
+header { margin-bottom: 32px; text-align: center; }
+header .logo { font-size: 2rem; font-weight: bold; color: var(--color-primary); margin-bottom: 16px; }
+nav ul { list-style-type: none; display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; padding: 12px; background-color: var(--color-surface-container); border-radius: var(--radius-extra-large); }
+nav ul li a { display: block; padding: 10px 20px; font-weight: 500; color: var(--color-on-primary-container); background-color: transparent; border-radius: var(--radius-extra-large); transition: background-color 0.3s ease, color 0.3s ease; border: 1px solid transparent; }
+nav ul li a:hover { background-color: var(--color-primary-container); }
+nav ul li a.active { background-color: var(--color-primary); color: #000; font-weight: 700; }
+
+
+/************************************************
+ * TABLES & COMPONENTS
+ ************************************************/
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
 }
 
-h2 {
-    font-size: 1.75rem;
+.ratings-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+.ratings-table th, .ratings-table td { padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--color-outline-variant); white-space: nowrap; }
+.ratings-table thead { background-color: var(--color-surface-container); }
+.ratings-table th { font-size: 0.9rem; font-weight: 700; color: var(--color-on-surface); text-transform: uppercase; letter-spacing: 0.5px; }
+.ratings-table tbody tr { background-color: var(--color-surface-container-low); transition: background-color 0.3s ease; }
+.ratings-table tbody tr:hover { background-color: var(--color-surface-container-highest); }
+.ratings-table tbody tr:last-child td { border-bottom: none; }
+.ratings-table .model-name { font-weight: 500; font-size: 1.1rem; color: var(--color-on-surface); }
+.ratings-table .model-summary { font-size: 0.95rem; color: var(--color-on-surface-variant); max-width: 500px; }
+
+.rating-badge { display: inline-block; padding: 6px 14px; font-size: 1.2rem; font-weight: 700; color: #000; background-color: var(--color-tertiary); border-radius: var(--radius-medium); min-width: 60px; text-align: center; }
+
+.link-button {
+    background-color: var(--color-primary-container);
+    color: var(--color-on-primary-container);
+    padding: 8px 12px;
+    border-radius: var(--radius-extra-large);
     font-weight: 500;
-    color: var(--color-on-surface);
-    margin-top: 32px;
-    margin-bottom: 24px;
-    border-bottom: 1px solid var(--color-outline-variant);
-    padding-bottom: 12px;
-}
-
-p {
-    margin-bottom: 16px;
-    color: var(--color-on-surface-variant);
-}
-
-a {
-    color: var(--color-primary);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-/* 6. Header & Navigation */
-header {
-    margin-bottom: 32px;
     text-align: center;
 }
-
-header .logo {
-    font-size: 2rem;
-    font-weight: bold;
-    color: var(--color-primary);
-    margin-bottom: 16px;
-}
-
-nav ul {
-    list-style-type: none;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 12px;
-    background-color: var(--color-surface-container);
-    border-radius: var(--radius-extra-large);
-}
-
-nav ul li a {
-    display: block;
-    padding: 10px 20px;
-    font-weight: 500;
-    color: var(--color-on-primary-container);
-    background-color: transparent; /* Changed for a more subtle look */
-    border-radius: var(--radius-extra-large);
-    transition: background-color 0.3s ease, color 0.3s ease;
-    border: 1px solid transparent;
-}
-
-nav ul li a:hover {
-    background-color: var(--color-primary-container);
-    text-decoration: none;
-}
-
-/* Style for the active navigation link */
-nav ul li a.active {
+.link-button:hover {
     background-color: var(--color-primary);
     color: var(--color-on-primary);
-    text-decoration: none;
+    filter: none;
 }
 
-/* 7. Table Styling */
-.ratings-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 24px;
-    overflow: hidden;
-    border-radius: var(--radius-large);
-    border: 1px solid var(--color-outline-variant);
-}
 
-.ratings-table th, .ratings-table td {
-    padding: 16px 20px;
-    text-align: left;
-    border-bottom: 1px solid var(--color-outline-variant);
-}
+/************************************************
+ * FORMS & SEARCH
+ ************************************************/
 
-.ratings-table thead {
-    background-color: var(--color-surface-container);
-}
+#search-section { margin-bottom: 24px; }
+#component-search { width: 100%; padding: 14px 20px; font-size: 1rem; color: var(--color-on-surface); background-color: var(--color-surface-container); border: 1px solid var(--color-outline); border-radius: var(--radius-extra-large); transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+#component-search:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 2px var(--color-primary-container); }
 
-.ratings-table th {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: var(--color-on-surface);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.ratings-table tbody tr {
-    background-color: var(--color-surface-container-low);
-    transition: background-color 0.3s ease;
-}
-
-.ratings-table tbody tr:hover {
-    background-color: var(--color-surface-container-highest);
-}
-
-.ratings-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.ratings-table .model-name {
-    font-weight: 500;
-    font-size: 1.1rem;
-    color: var(--color-on-surface);
-}
-
-.ratings-table .model-summary {
-    font-size: 0.95rem;
-    color: var(--color-on-surface-variant);
-    max-width: 500px;
-}
-
-/* 8. Rating Badge */
-.rating-badge {
-    display: inline-block;
-    padding: 6px 14px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--color-surface-container-lowest);
-    background-color: var(--color-tertiary);
-    border-radius: var(--radius-medium);
-    min-width: 60px;
-    text-align: center;
-}
-
-/* 9. Search Bar Styling */
-#search-section {
-    margin-bottom: 24px;
-}
-
-#component-search {
-    width: 100%;
-    padding: 14px 20px;
+#contact-form { margin-top: 24px; display: flex; flex-direction: column; gap: 16px; }
+.form-group { display: flex; flex-direction: column; }
+.form-group label { margin-bottom: 8px; font-weight: 500; color: var(--color-on-surface-variant); }
+.form-group input, .form-group textarea {
     font-size: 1rem;
-    color: var(--color-on-surface);
+    padding: 12px;
     background-color: var(--color-surface-container);
     border: 1px solid var(--color-outline);
-    border-radius: var(--radius-extra-large);
+    border-radius: var(--radius-medium);
+    color: var(--color-on-surface);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-
-#component-search:focus {
+.form-group input:focus, .form-group textarea:focus {
     outline: none;
     border-color: var(--color-primary);
     box-shadow: 0 0 0 2px var(--color-primary-container);
 }
-
-/* 10. Footer Styling */
-footer {
-    margin-top: 48px;
-    padding-top: 24px;
-    border-top: 1px solid var(--color-outline-variant);
-    text-align: center;
-    color: var(--color-on-surface-variant);
-    font-size: 0.9rem;
+.cta-button {
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-on-primary);
+    background-color: var(--color-primary);
+    border: none;
+    border-radius: var(--radius-extra-large);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: flex-start;
 }
+.cta-button:hover {
+    filter: brightness(1.2);
+}
+#contact-details { margin-top: 48px; }
+
+
+/************************************************
+ * FOOTER
+ ************************************************/
+
+footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--color-outline-variant); text-align: center; color: var(--color-on-surface-variant); font-size: 0.9rem; }

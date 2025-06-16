@@ -4,55 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Classifiche Componenti E-Bike - E-Bike Ratings</title>
-    <!-- Corrected path for CSS -->
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
     <div class="container">
-        <!-- Header will be loaded here -->
         <div id="header-placeholder"></div>
-
         <main>
             <section id="component-rankings-intro">
                 <h2>Classifiche dei Migliori Componenti per E-Bike</h2>
                 <p>Esplora le nostre classifiche dettagliate per ogni categoria di componente. Usa la barra di ricerca per filtrare i risultati in tempo reale.</p>
             </section>
             
-            <!-- Search Bar for Live Filtering -->
             <section id="search-section">
                 <input type="text" id="component-search" placeholder="Cerca per marca o modello di motore...">
             </section>
 
             <section id="rankings-motori">
                 <h3>Classifica Motori E-Bike</h3>
-                <table class="ratings-table">
-                    <thead>
-                        <tr>
-                            <th>Pos.</th>
-                            <th>Marca</th>
-                            <th>Modello</th>
-                            <th>Tipo</th>
-                            <th>Coppia Max (Nm)</th>
-                            <th>Valutazione</th>
-                        </tr>
-                    </thead>
-                    <!-- Table body will be populated by script.js -->
-                    <tbody>
-                        <!-- Loading spinner/message can be placed here -->
-                        <tr><td colspan="6">Caricamento dati...</td></tr>
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="ratings-table">
+                        <thead>
+                            <tr>
+                                <th>Pos.</th>
+                                <th>Marca</th>
+                                <th>Modello</th>
+                                <th>Coppia</th>
+                                <th>Peso</th>
+                                <th>Potenza Picco</th>
+                                <th>Valutazione</th>
+                                <th>Fonte</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="8">Caricamento dati...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
             </section>
-            
-             <!-- Other component tables would follow a similar pattern -->
-
         </main>
-        
-        <!-- Footer will be loaded here -->
         <div id="footer-placeholder"></div>
     </div>
-    
-    <!-- Corrected path for the script -->
     <script src="../script.js"></script>
 </body>
 </html>

@@ -6,7 +6,11 @@
       "modello": "Performance Line CX Race",
       "tipo": "Centrale",
       "coppia": 85,
-      "valutazione": 9.5
+      "valutazione": 9.5,
+      "peso_kg": 2.75,
+      "potenza_picco_w": 600,
+      "supporto_max_percent": 400,
+      "fonte_url": "https://www.bosch-ebike.com/it/prodotti/performance-line-cx-race"
     },
     {
       "posizione": 2,
@@ -14,7 +18,11 @@
       "modello": "STEPS EP801",
       "tipo": "Centrale",
       "coppia": 85,
-      "valutazione": 9.3
+      "valutazione": 9.3,
+      "peso_kg": 2.7,
+      "potenza_picco_w": 600,
+      "supporto_max_percent": 400,
+      "fonte_url": "https://bike.shimano.com/it-IT/product/component/ep8-ep801.html"
     },
     {
       "posizione": 3,
@@ -22,23 +30,35 @@
       "modello": "Performance Line CX",
       "tipo": "Centrale",
       "coppia": 85,
-      "valutazione": 9.2
+      "valutazione": 9.2,
+      "peso_kg": 2.9,
+      "potenza_picco_w": 600,
+      "supporto_max_percent": 340,
+      "fonte_url": "https://www.bosch-ebike.com/it/prodotti/performance-line-cx"
     },
     {
-        "posizione": 4,
-        "marca": "Yamaha",
-        "modello": "PW-X3",
-        "tipo": "Centrale",
-        "coppia": 85,
-        "valutazione": 9.0
+      "posizione": 4,
+      "marca": "Yamaha",
+      "modello": "PW-X3",
+      "tipo": "Centrale",
+      "coppia": 85,
+      "valutazione": 9.0,
+      "peso_kg": 2.75,
+      "potenza_picco_w": 500,
+      "supporto_max_percent": 400,
+      "fonte_url": "https://www.yamaha-motor.eu/it/it/ebike-systems/pw-x3/"
     },
     {
-        "posizione": 5,
-        "marca": "Specialized",
-        "modello": "Turbo Full Power 2.2",
-        "tipo": "Centrale",
-        "coppia": 90,
-        "valutazione": 8.8
+      "posizione": 5,
+      "marca": "Specialized",
+      "modello": "Turbo Full Power 2.2",
+      "tipo": "Centrale",
+      "coppia": 90,
+      "valutazione": 8.8,
+      "peso_kg": 2.9,
+      "potenza_picco_w": 565,
+      "supporto_max_percent": 410,
+      "fonte_url": "https://www.specialized.com/it/it/turbo-technology"
     }
   ],
   "batterie": [
@@ -57,11 +77,11 @@
       "valutazione": 9.3
     },
     {
-        "posizione": 3,
-        "marca": "Specialized",
-        "modello": "M3-700",
-        "capacita": 700,
-        "valutazione": 9.2
+      "posizione": 3,
+      "marca": "Specialized",
+      "modello": "M3-700",
+      "capacita": 700,
+      "valutazione": 9.2
     }
   ]
 }

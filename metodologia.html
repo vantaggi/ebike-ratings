@@ -3,105 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Metodologia di Valutazione - E-Bike Component Guru</title>
+    <title>Metodologia di Valutazione - E-Bike Ratings</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>E-Bike Component Guru</h1>
-        <nav>
-            </nav>
-    </header>
-
-    <main>
-        <section id="methodology-intro">
-            <h2>La Nostra Metodologia di Valutazione</h2>
-            <p>Per creare un sistema di valutazione da 0 a 10 (con decimali) che sia credibile e utile, abbiamo stabilito un framework trasparente e robusto. Il nostro obiettivo è tradurre specifiche tecniche complesse e dati di performance in punteggi chiari e comparabili.</p>
-        </section>
-
-        <section id="core-principles">
-            <h3>Principi Fondamentali</h3>
-            <ul>
-                <li><strong>Obiettività:</strong> Ci basiamo su specifiche misurabili e, ove possibile, su standard di test riconosciuti.</li>
-                <li><strong>Trasparenza:</strong> I criteri e le ponderazioni sono definiti chiaramente per ogni categoria di componente.</li>
-                <li><strong>Rilevanza:</strong> Ci concentriamo sui fattori che influenzano realmente le prestazioni, l'affidabilità e l'esperienza d'uso.</li>
-                <li><strong>Contestualizzazione:</strong> Riconosciamo che il componente "migliore" può variare in base al tipo di e-bike e all'uso previsto (es. urbano vs. e-MTB).</li>
-            </ul>
-        </section>
-
-        <section id="rating-scale">
-            <h3>La Scala di Valutazione 0-10</h3>
-            <p>I nostri punteggi sono così definiti (ispirato da [13]):</p>
-            <ul>
-                <li><strong>9.5 - 10.0:</strong> Eccezionale / Riferimento di mercato</li>
-                <li><strong>8.0 - 9.4:</strong> Eccellente</li>
-                <li><strong>6.0 - 7.9:</strong> Molto Buono</li>
-                <li><strong>4.0 - 5.9:</strong> Buono / Medio</li>
-                <li><strong>2.0 - 3.9:</strong> Sufficiente / Discreto</li>
-                <li><strong>0.0 - 1.9:</strong> Scarso / Inaccettabile</li>
-            </ul>
-        </section>
-
-        <section id="criteria-definition">
-            <h3>Definizione dei Criteri per Categoria</h3>
-            <p>Per ogni componente principale (Motore, Batteria, Freni, Trasmissione, Display, Telaio, Sospensioni), identifichiamo i KPI più rilevanti. Ad esempio:</p>
-            <ul>
-                <li><strong>Motore:</strong> Coppia (Nm), Potenza (W), Peso (kg), Efficienza, Livelli di supporto (%), Reattività, Rumorosità, Qualità software/app, Affidabilità.</li>
-                <li><strong>Batteria:</strong> Capacità (Wh), Densità energetica (Wh/kg), Peso (kg), Cicli di vita, Tempo di ricarica, Qualità BMS.</li>
-                <li><strong>Freni:</strong> Potenza (n° pistoni, diametro dischi), Modulazione, Resistenza al fading, Durabilità.</li>
+    <div class="container">
+        <div id="header-placeholder"></div>
+        <main>
+            <section id="methodology-intro">
+                <h1>La Nostra Metodologia di Valutazione</h1>
+                <p>Per creare un sistema di valutazione da 0 a 10 che sia credibile e utile, abbiamo stabilito un framework trasparente e robusto. Il nostro obiettivo è tradurre specifiche tecniche complesse e dati di performance in punteggi chiari e comparabili.</p>
+            </section>
+            <section id="core-principles">
+                <h2>Principi Fondamentali</h2>
+                <ul>
+                    <li><strong>Obiettività:</strong> Ci basiamo su specifiche misurabili e standard di test riconosciuti.</li>
+                    <li><strong>Trasparenza:</strong> I criteri e le ponderazioni sono definiti chiaramente.</li>
+                    <li><strong>Rilevanza:</strong> Ci concentriamo sui fattori che influenzano realmente le prestazioni e l'esperienza d'uso.</li>
+                    <li><strong>Contestualizzazione:</strong> Riconosciamo che il componente "migliore" può variare in base all'uso previsto.</li>
                 </ul>
-        </section>
-
-        <section id="criteria-weighting">
-            <h3>Ponderazione dei Criteri</h3>
-            <p>Non tutti i criteri hanno lo stesso impatto. La ponderazione riflette l'importanza di ciascun criterio per le prestazioni complessive del componente, e può variare leggermente in base al tipo di e-bike. Ad esempio, per un motore e-MTB:</p>
-            <ul>
-                <li>Coppia e Erogazione Potenza: 30%</li>
-                <li>Affidabilità e Durabilità: 20%</li>
-                <li>Reattività e Sensazione di Guida: 20%</li>
-                <li>Efficienza e Gestione Batteria: 15%</li>
-                <li>Peso e Dimensioni: 10%</li>
-                <li>Rumorosità e Software: 5%</li>
-            </ul>
-        </section>
-
-        <section id="scoring-process">
-            <h3>Processo di Traduzione delle Specifiche in Punteggi</h3>
-            <ul>
-                <li><strong>Benchmarking:</strong> Stabiliamo valori di riferimento per ogni KPI.</li>
-                <li><strong>Funzioni di Normalizzazione:</strong> Utilizziamo funzioni matematiche per convertire i valori grezzi in punteggi 0-10.</li>
-                <li><strong>Punteggi Qualitativi:</strong> Per aspetti come "sensazione di guida" o "UI/UX", usiamo griglie di valutazione basate su test esperti e feedback consolidato.</li>
-                <li><strong>Aggregazione dei Punteggi:</strong> Il punteggio finale del componente è la somma ponderata dei punteggi dei singoli criteri.</li>
-            </ul>
-        </section>
-
-        <section id="ebike-classification">
-            <h3>Classificare le E-Bike Complete</h3>
-            <p>La classificazione delle e-bike complete deriva da un punteggio composito, basato sulle valutazioni dei loro componenti costitutivi. Questo offre una visione olistica e data-driven.</p>
-            <ol>
-                <li><strong>Identificazione dei Componenti Chiave:</strong> Analizziamo le specifiche di ogni e-bike. [11, 14, 15, 16, 17, 18, 19, 20, 21]</li>
-                <li><strong>Assegnazione dei Punteggi dei Componenti:</strong> Utilizziamo i punteggi calcolati per ogni singolo componente.</li>
-                <li><strong>Ponderazione delle Categorie di Componenti per l'E-Bike:</strong> Ad esempio, per una E-MTB Full-Suspension:
-                    <ul>
-                        <li>Motore: 25%</li>
-                        <li>Batteria: 20%</li>
-                        <li>Sospensioni: 20%</li>
-                        <li>Telaio: 10%</li>
-                        <li>Freni: 10%</li>
-                        <li>Trasmissione: 10%</li>
-                        <li>Display & Controller: 5%</li>
-                    </ul>
-                </li>
-                <li><strong>Calcolo del Punteggio Complessivo:</strong> $$P_{ebike} = \sum (P_{componente_i} \times W_{componente_i})$$</li>
-                <li><strong>Considerazioni Aggiuntive:</strong> Integrazione di sistema, rapporto qualità-prezzo, affidabilità del marchio.</li>
-            </ol>
-            <p>Creiamo classifiche separate per diverse categorie di e-bike (E-City, E-MTB Trail, E-MTB Enduro, ecc.) per confronti equi e utili.</p>
-        </section>
-
-    </main>
-
-    <footer>
-        <p>&copy; 2024 E-Bike Component Guru. Tutti i diritti riservati.</p>
-    </footer>
+            </section>
+            <section id="scoring-process">
+                <h2>Processo di Punteggio</h2>
+                 <ol>
+                    <li><strong>Identificazione dei KPI:</strong> Per ogni componente (motore, batteria, etc.) definiamo gli indicatori chiave di prestazione (es. Nm per motori, Wh per batterie).</li>
+                    <li><strong>Benchmarking:</strong> Stabiliamo valori di riferimento per ogni KPI nel mercato attuale.</li>
+                    <li><strong>Normalizzazione:</strong> Utilizziamo funzioni matematiche per convertire i valori grezzi in punteggi da 0 a 10.</li>
+                    <li><strong>Ponderazione:</strong> Assegniamo un peso a ogni KPI in base alla sua importanza per definire il punteggio del componente.</li>
+                    <li><strong>Punteggio Composito E-Bike:</strong> Il punteggio finale di una e-bike è la somma ponderata dei punteggi dei suoi componenti principali.</li>
+                </ol>
+            </section>
+        </main>
+        <div id="footer-placeholder"></div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
