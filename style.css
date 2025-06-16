@@ -2,6 +2,7 @@
  * E-Bike Ratings - style.css
  * Theme: Material 3 Expressive (Dark)
  * Author: Gemini
+ * Comments in English as requested.
  */
 
 /* 1. Google Font Import */
@@ -80,6 +81,7 @@ h2 {
     font-size: 1.75rem;
     font-weight: 500;
     color: var(--color-on-surface);
+    margin-top: 32px;
     margin-bottom: 24px;
     border-bottom: 1px solid var(--color-outline-variant);
     padding-bottom: 12px;
@@ -129,12 +131,19 @@ nav ul li a {
     padding: 10px 20px;
     font-weight: 500;
     color: var(--color-on-primary-container);
-    background-color: var(--color-primary-container);
+    background-color: transparent; /* Changed for a more subtle look */
     border-radius: var(--radius-extra-large);
     transition: background-color 0.3s ease, color 0.3s ease;
+    border: 1px solid transparent;
 }
 
-nav ul li a:hover, nav ul li a.active {
+nav ul li a:hover {
+    background-color: var(--color-primary-container);
+    text-decoration: none;
+}
+
+/* Style for the active navigation link */
+nav ul li a.active {
     background-color: var(--color-primary);
     color: var(--color-on-primary);
     text-decoration: none;
@@ -169,6 +178,7 @@ nav ul li a:hover, nav ul li a.active {
 }
 
 .ratings-table tbody tr {
+    background-color: var(--color-surface-container-low);
     transition: background-color 0.3s ease;
 }
 
@@ -203,4 +213,36 @@ nav ul li a:hover, nav ul li a.active {
     border-radius: var(--radius-medium);
     min-width: 60px;
     text-align: center;
+}
+
+/* 9. Search Bar Styling */
+#search-section {
+    margin-bottom: 24px;
+}
+
+#component-search {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+    color: var(--color-on-surface);
+    background-color: var(--color-surface-container);
+    border: 1px solid var(--color-outline);
+    border-radius: var(--radius-extra-large);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#component-search:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary-container);
+}
+
+/* 10. Footer Styling */
+footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-outline-variant);
+    text-align: center;
+    color: var(--color-on-surface-variant);
+    font-size: 0.9rem;
 }

@@ -1,0 +1,67 @@
+{
+  "motori": [
+    {
+      "posizione": 1,
+      "marca": "Bosch",
+      "modello": "Performance Line CX Race",
+      "tipo": "Centrale",
+      "coppia": 85,
+      "valutazione": 9.5
+    },
+    {
+      "posizione": 2,
+      "marca": "Shimano",
+      "modello": "STEPS EP801",
+      "tipo": "Centrale",
+      "coppia": 85,
+      "valutazione": 9.3
+    },
+    {
+      "posizione": 3,
+      "marca": "Bosch",
+      "modello": "Performance Line CX",
+      "tipo": "Centrale",
+      "coppia": 85,
+      "valutazione": 9.2
+    },
+    {
+        "posizione": 4,
+        "marca": "Yamaha",
+        "modello": "PW-X3",
+        "tipo": "Centrale",
+        "coppia": 85,
+        "valutazione": 9.0
+    },
+    {
+        "posizione": 5,
+        "marca": "Specialized",
+        "modello": "Turbo Full Power 2.2",
+        "tipo": "Centrale",
+        "coppia": 90,
+        "valutazione": 8.8
+    }
+  ],
+  "batterie": [
+    {
+      "posizione": 1,
+      "marca": "Giant",
+      "modello": "EnergyPak Smart 800",
+      "capacita": 800,
+      "valutazione": 9.4
+    },
+    {
+      "posizione": 2,
+      "marca": "Bosch",
+      "modello": "PowerTube 750",
+      "capacita": 750,
+      "valutazione": 9.3
+    },
+    {
+        "posizione": 3,
+        "marca": "Specialized",
+        "modello": "M3-700",
+        "capacita": 700,
+        "valutazione": 9.2
+    }
+  ]
+}
