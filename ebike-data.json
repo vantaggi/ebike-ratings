@@ -1,6 +1,7 @@
 {
   "motori": [
     {
+      "id": 1,
       "posizione": 1,
       "marca": "Bosch",
       "modello": "Performance Line CX Race",
@@ -13,6 +14,7 @@
       "fonte_url": "https://www.bosch-ebike.com/it/prodotti/performance-line-cx-race"
     },
     {
+      "id": 2,
       "posizione": 2,
       "marca": "Shimano",
       "modello": "STEPS EP801",
@@ -25,6 +27,7 @@
       "fonte_url": "https://bike.shimano.com/it-IT/product/component/ep8-ep801.html"
     },
     {
+      "id": 3,
       "posizione": 3,
       "marca": "Bosch",
       "modello": "Performance Line CX",
@@ -37,6 +40,7 @@
       "fonte_url": "https://www.bosch-ebike.com/it/prodotti/performance-line-cx"
     },
     {
+      "id": 4,
       "posizione": 4,
       "marca": "Yamaha",
       "modello": "PW-X3",
@@ -49,6 +53,7 @@
       "fonte_url": "https://www.yamaha-motor.eu/it/it/ebike-systems/pw-x3/"
     },
     {
+      "id": 5,
       "posizione": 5,
       "marca": "Specialized",
       "modello": "Turbo Full Power 2.2",
@@ -63,6 +68,7 @@
   ],
   "batterie": [
     {
+      "id": 1,
       "posizione": 1,
       "marca": "Giant",
       "modello": "EnergyPak Smart 800",
@@ -70,6 +76,7 @@
       "valutazione": 9.4
     },
     {
+      "id": 2,
       "posizione": 2,
       "marca": "Bosch",
       "modello": "PowerTube 750",
@@ -77,46 +84,137 @@
       "valutazione": 9.3
     },
     {
+      "id": 3,
       "posizione": 3,
       "marca": "Specialized",
       "modello": "M3-700",
       "capacita": 700,
       "valutazione": 9.2
+    },
+    {
+      "id": 4,
+      "posizione": 4,
+      "marca": "Bosch",
+      "modello": "PowerTube 625",
+      "capacita": 625,
+      "valutazione": 9.0
+    }
+  ],
+  "brakes": [
+    {
+      "id": 1,
+      "posizione": 1,
+      "marca": "Magura",
+      "modello": "MT7 Pro",
+      "valutazione": 9.8,
+      "analisi": "La quintessenza della potenza frenante. I 4 pistoncini per pinza offrono una forza di arresto impressionante, ideale per e-enduro e discese impegnative. La modulabilità è superba una volta che ci si abitua alla sua potenza."
+    },
+    {
+      "id": 2,
+      "posizione": 2,
+      "marca": "Shimano",
+      "modello": "XT M8120 (4-Piston)",
+      "valutazione": 9.5,
+      "analisi": "Un freno incredibilmente versatile ed equilibrato. Offre grande potenza grazie ai 4 pistoncini e la tipica, eccellente modulabilità Shimano (tecnologia Servo Wave). Affidabile, facile da manutenere e un riferimento per il trail riding."
+    },
+    {
+      "id": 3,
+      "posizione": 3,
+      "marca": "SRAM",
+      "modello": "Code RSC",
+      "valutazione": 9.4,
+      "analisi": "Il top di gamma SRAM per il gravity. Potentissimo e con ampie possibilità di regolazione della leva (distanza e punto di contatto) senza attrezzi. Gestisce il calore in modo eccellente, garantendo prestazioni costanti."
+    },
+    {
+      "id": 4,
+      "posizione": 4,
+      "marca": "TRP",
+      "modello": "DH-R EVO",
+      "valutazione": 9.2,
+      "analisi": "Sviluppato con campioni della Downhill, questo freno è progettato per dischi più spessi (2.3mm) che dissipano meglio il calore. Offre una potenza costante e una sensazione alla leva molto solida e prevedibile."
+    },
+    {
+      "id": 5,
+      "posizione": 5,
+      "marca": "Hayes",
+      "modello": "Dominion A4",
+      "valutazione": 9.0,
+      "analisi": "Un ritorno in grande stile per Hayes. Il Dominion A4 è potente, con un'ottima sensazione alla leva e un sistema di spurgo intelligente. La sua rigidità strutturale lo rende molto preciso in frenata."
+    }
+  ],
+  "suspensions": [
+    {
+      "id": 1,
+      "posizione": 1,
+      "marca": "Fox",
+      "modello": "38 Factory GRIP2",
+      "tipo": "Forcella",
+      "escursione_mm": 180,
+      "valutazione": 9.7,
+      "analisi": "Il benchmark per le forcelle da enduro. Rigidità eccezionale, regolazioni infinite e una sensibilità ai piccoli urti che non compromette il supporto a metà corsa."
+    },
+    {
+      "id": 2,
+      "posizione": 2,
+      "marca": "RockShox",
+      "modello": "ZEB Ultimate Charger 3",
+      "tipo": "Forcella",
+      "escursione_mm": 180,
+      "valutazione": 9.6,
+      "analisi": "La risposta di RockShox alla Fox 38. Estremamente rigida e performante, con la nuova cartuccia Charger 3 che offre un controllo superbo e una facile regolazione."
+    },
+    {
+      "id": 3,
+      "posizione": 3,
+      "marca": "Fox",
+      "modello": "Float X2 Factory",
+      "tipo": "Ammortizzatore",
+      "valutazione": 9.5,
+      "analisi": "Un ammortizzatore ad aria che si comporta quasi come uno a molla. Incredibile capacità di assorbimento e resistenza al surriscaldamento, perfetto per lunghe discese."
+    },
+    {
+      "id": 4,
+      "posizione": 4,
+      "marca": "Öhlins",
+      "modello": "TTX22m.2",
+      "tipo": "Ammortizzatore",
+      "valutazione": 9.4,
+      "analisi": "Qualità svedese al servizio della MTB. Un controllo della compressione e del ritorno senza pari, offre un grip e una trazione eccezionali su ogni terreno."
     }
   ],
   "e_bikes": [
     {
+      "id": 1,
       "posizione": 1,
       "modello": "Orbea WILD M-LTD 2024",
       "punteggio_finale": 9.4,
-      "motore": "Bosch Perf. CX-R",
-      "motore_valutazione": 9.5,
-      "batteria": "Bosch PT 625Wh",
-      "batteria_valutazione": 9.0,
-      "freni": "SRAM Code Ultimate",
-      "freni_valutazione": 9.3
+      "motore_id": 1,
+      "batteria_id": 4,
+      "freni_id": 3,
+      "forcella_id": 1,
+      "ammortizzatore_id": 3
     },
     {
+      "id": 2,
       "posizione": 2,
       "modello": "Trek Rail 9.9 X0 AXS T4 Gen4 2024",
       "punteggio_finale": 9.3,
-      "motore": "Bosch Perf. CX",
-      "motore_valutazione": 9.2,
-      "batteria": "Bosch PT 750Wh",
-      "batteria_valutazione": 9.3,
-      "freni": "SRAM Code (variabile)",
-      "freni_valutazione": null
+      "motore_id": 3,
+      "batteria_id": 2,
+      "freni_id": 3,
+      "forcella_id": 2,
+      "ammortizzatore_id": 4
     },
     {
+      "id": 3,
       "posizione": 3,
       "modello": "Specialized Turbo Levo Expert 2024",
       "punteggio_finale": 9.1,
-      "motore": "Specialized Turbo 2.2",
-      "motore_valutazione": 8.8,
-      "batteria": "Specialized 700Wh",
-      "batteria_valutazione": 9.1,
-      "freni": "SRAM Code RS",
-      "freni_valutazione": 9.3
+      "motore_id": 5,
+      "batteria_id": 3,
+      "freni_id": 3,
+      "forcella_id": 1,
+      "ammortizzatore_id": 3
     }
   ]
 }
