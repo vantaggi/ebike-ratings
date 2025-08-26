@@ -223,3 +223,143 @@ footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--color-
     height: 20px;
     border-radius: var(--radius-small);
 }
+
+/************************************************
+ * E-BIKE DETAIL PAGE (scheda-ebike)
+ ************************************************/
+.scheda-ebike-main {
+    max-width: 960px;
+    margin: 2rem auto;
+}
+
+.ebike-hero-section {
+    background-color: var(--color-surface-container-low);
+    border-radius: var(--radius-extra-large);
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.ebike-hero-section h1 {
+    font-size: 2.5rem;
+    margin: 0 0 0.5rem 0;
+    color: var(--color-on-surface);
+}
+
+.hero-rating {
+    margin-top: 1rem;
+}
+
+.hero-rating span {
+    display: block;
+    font-size: 1rem;
+    color: var(--color-on-surface-variant);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.rating-badge.large {
+    font-size: 2.5rem;
+    padding: 0.5em 1em;
+}
+
+.rating-badge.small {
+    font-size: 0.9rem;
+    padding: 0.3em 0.6em;
+    font-weight: 600;
+}
+
+.scheda-content-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.key-specs {
+    background-color: var(--color-surface-container-low);
+    padding: 1.5rem;
+    border-radius: var(--radius-large);
+}
+
+.key-specs h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    border-bottom: 1px solid var(--color-surface-container-high);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.specs-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.specs-list li {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-surface-container);
+}
+
+.specs-list li:last-child {
+    border-bottom: none;
+}
+
+.specs-list li strong {
+    color: var(--color-on-surface);
+    font-weight: 500;
+}
+
+.specs-list li span {
+    color: var(--color-on-surface-variant);
+    text-align: left;
+}
+
+.specs-list li .rating-badge {
+    justify-self: end;
+}
+
+.analysis-section {
+    background-color: var(--color-surface-container-low);
+    padding: 1.5rem 2rem;
+    border-radius: var(--radius-large);
+}
+
+.analysis-section h2 {
+    margin-top: 0;
+}
+
+@media (max-width: 768px) {
+    .scheda-content-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.filter-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: var(--color-surface-container);
+    border-radius: var(--radius-large);
+    flex-wrap: wrap;
+}
+
+.filter-controls .form-group {
+    flex-grow: 1;
+}
+
+.filter-controls .form-group select {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.5rem;
+    background-color: var(--color-surface-container-high);
+    border: 1px solid var(--color-outline);
+    border-radius: var(--radius-medium);
+    color: var(--color-on-surface);
+}
