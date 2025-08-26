@@ -1,0 +1,91 @@
+/* Stili per il pannello di amministrazione */
+body {
+    font-family: sans-serif;
+    line-height: 1.6;
+    margin: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header, section {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+h1, h2 {
+    color: #0056b3;
+}
+
+select, input, button {
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#cancel-edit {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+#cancel-edit:hover {
+    background-color: #5a6268;
+}
+
+#save-all-changes {
+    background-color: #28a745;
+    border-color: #28a745;
+    font-weight: bold;
+}
+
+#save-all-changes:hover {
+    background-color: #218838;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+#form-fields {
+    margin-bottom: 20px;
+}
+
+#form-fields div {
+    margin-bottom: 10px;
+}
+
+#form-fields label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#form-fields input {
+    width: calc(100% - 22px); /* Full width minus padding and border */
+}
