@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confronta Dati Tecnici - E-Bike Ratings</title>
+    <meta name="description" content="Confronta e analizza e-bike e componenti in una tabella dettagliata.">
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="header-placeholder"></div>
+
+        <main class="comparison-main">
+            <header class="page-header">
+                <h1>Tabella Comparativa</h1>
+                <p>Seleziona una categoria e personalizza le colonne per confrontare i dati tecnici.</p>
+            </header>
+
+            <!-- Controls Section -->
+            <section class="comparison-controls">
+                <div class="control-group">
+                    <label for="category-select">Seleziona Categoria:</label>
+                    <select id="category-select">
+                        <option value="e_bikes">E-Bike</option>
+                        <option value="motori">Motori</option>
+                        <option value="batterie">Batterie</option>
+                        <option value="freni">Freni</option>
+                        <option value="sospensioni">Sospensioni</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Mostra/Nascondi Colonne:</label>
+                    <div id="column-toggle-container" class="checkbox-container">
+                        <!-- Checkboxes will be dynamically inserted here by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Table Container -->
+            <section id="comparison-table-container" class="table-responsive">
+                <!-- La tabella verrà generata dinamicamente qui da JS -->
+            </section>
+        </main>
+
+        <div id="footer-placeholder"></div>
+    </div>
+    <script src="../script.js"></script>
+</body>
+</html>

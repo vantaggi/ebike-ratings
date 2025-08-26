@@ -139,6 +139,229 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     /************************************************
+     * COMPARISON PAGE
+     ************************************************/
+
+    const tableConfig = {
+        'e_bikes': {
+            headers: ['Modello', 'Categoria', 'Anno', 'Valutazione', 'Motore', 'Batteria', 'Freni'],
+            dataKeys: ['modello', 'categoria', 'anno', 'valutazione', 'id_motore', 'id_batteria', 'id_freni']
+        },
+        'motori': {
+            headers: ['Modello', 'Marca', 'Valutazione', 'Coppia (Nm)', 'Peso (kg)', 'Potenza di Picco (W)', 'Anno Rilascio'],
+            dataKeys: ['modello', 'marca', 'valutazione', 'coppia', 'peso_kg', 'potenza_picco_w', 'anno_rilascio']
+        },
+        'batterie': {
+            headers: ['Modello', 'Marca', 'Valutazione', 'Capacità (Wh)', 'Anno Rilascio'],
+            dataKeys: ['modello', 'marca', 'valutazione', 'capacita', 'anno_rilascio']
+        },
+        'freni': {
+            headers: ['Modello', 'Marca', 'Valutazione', 'Tipo', 'Anno Rilascio'],
+            dataKeys: ['modello', 'marca', 'valutazione', 'tipo', 'anno_rilascio']
+        },
+        'sospensioni': {
+            headers: ['Modello', 'Marca', 'Valutazione', 'Tipo', 'Escursione (mm)', 'Anno Rilascio'],
+            dataKeys: ['modello', 'marca', 'valutazione', 'tipo', 'escursione_mm', 'anno_rilascio']
+        }
+    };
+
+    function populateColumnToggle(category) {
+        const container = document.getElementById('column-toggle-container');
+        if (!container) return;
+
+        const config = tableConfig[category];
+        container.innerHTML = ''; // Clear old checkboxes
+
+        config.headers.forEach((header, index) => {
+            // The first column ('Modello') is fixed and cannot be hidden.
+            if (index === 0) return;
+
+            const label = document.createElement('label');
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = true;
+            checkbox.dataset.columnIndex = index + 1; // Use 1-based index for nth-child selector
+            checkbox.addEventListener('change', handleColumnToggle);
+
+            label.appendChild(checkbox);
+            label.appendChild(document.createTextNode(header));
+            container.appendChild(label);
+        });
+    }
+
+    function handleColumnToggle(event) {
+        const columnIndex = event.target.dataset.columnIndex;
+        const table = document.querySelector('.comparison-table');
+        if (!table) return;
+
+        const cells = table.querySelectorAll(`th:nth-child(${columnIndex}), td:nth-child(${columnIndex})`);
+        cells.forEach(cell => {
+            cell.style.display = event.target.checked ? '' : 'none';
+        });
+    }
+
+    function renderComparisonTable(category, allData) {
+        const container = document.getElementById('comparison-table-container');
+        if (!container) return;
+
+        const config = tableConfig[category];
+        const items = [...allData[category]]; // Create a shallow copy to avoid modifying original data
+
+        if (!config || !items) {
+            container.innerHTML = '<p>Configurazione o dati non trovati per questa categoria.</p>';
+            return;
+        }
+
+        // Special handling for e-bike score calculation and sorting
+        if (category === 'e_bikes') {
+            items.forEach(bike => {
+                bike.valutazione = calculateCompositeScore(bike, allData);
+            });
+            // Sort by score descending
+            items.sort((a, b) => b.valutazione - a.valutazione);
+        }
+
+        const table = document.createElement('table');
+        table.className = 'comparison-table';
+
+        // Create Headers
+        const thead = document.createElement('thead');
+        let headerHtml = '<tr>';
+        config.headers.forEach((header, index) => {
+            headerHtml += `<th class="${index === 0 ? 'fixed-column' : ''}">${header}</th>`;
+        });
+        headerHtml += '</tr>';
+        thead.innerHTML = headerHtml;
+        table.appendChild(thead);
+
+        // Create Body
+        const tbody = document.createElement('tbody');
+        items.forEach(item => {
+            let rowHtml = '<tr>';
+            config.dataKeys.forEach((key, index) => {
+                const isFixed = index === 0;
+                let cellContent = item[key] !== undefined && item[key] !== null ? item[key] : 'N/D';
+
+                // Create link for the first column (Modello)
+                if (isFixed) {
+                    const detailUrl = category === 'e_bikes'
+                        ? `${basePath}/classifiche/scheda-ebike.html?id=${item.id}`
+                        : `${basePath}/classifiche/scheda-componente.html?type=${category}&id=${item.id}`;
+
+                    const linkText = (category !== 'e_bikes' && item.marca)
+                        ? `${item.marca} ${item.modello}`
+                        : item.modello;
+
+                    cellContent = `<a href="${detailUrl}">${linkText}</a>`;
+
+                } else if (category === 'e_bikes') {
+                    // Special rendering for linked components in e-bikes table
+                    if (key === 'id_motore') {
+                        const motor = allData.motori.find(m => m.id === cellContent);
+                        cellContent = motor ? `${motor.marca} ${motor.modello}` : 'N/D';
+                    } else if (key === 'id_batteria') {
+                        const battery = allData.batterie.find(b => b.id === cellContent);
+                        cellContent = battery ? `${battery.marca} ${battery.modello}` : 'N/D';
+                    } else if (key === 'id_freni') {
+                         const brake = allData.freni.find(f => f.id === cellContent);
+                         cellContent = brake ? `${brake.marca} ${brake.modello}` : 'N/D';
+                    }
+                }
+
+                // Add a rating badge for the 'valutazione' key
+                if (key === 'valutazione' && cellContent !== 'N/D') {
+                    cellContent = `<span class="rating-badge">${cellContent}</span>`;
+                }
+
+                rowHtml += `<td class="${isFixed ? 'fixed-column model-name' : ''}">${cellContent}</td>`;
+            });
+            rowHtml += '</tr>';
+            tbody.innerHTML += rowHtml;
+        });
+        table.appendChild(tbody);
+
+        container.innerHTML = ''; // Clear previous table
+        container.appendChild(table);
+
+        // Populate checkboxes after rendering the table
+        populateColumnToggle(category);
+    }
+
+
+    /************************************************
+     * COMPONENT DETAIL PAGE
+     ************************************************/
+    function renderComponentDetail(type, item) {
+        // --- Sanitize and Format Display ---
+        const formatHeader = (key) => {
+            const words = key.replace(/_/g, ' ').split(' ');
+            return words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        };
+
+        const mainContainer = document.getElementById('component-detail-main');
+        if (!item) {
+            mainContainer.innerHTML = '<h2>Componente non trovato</h2>';
+            return;
+        }
+
+        const modelName = `${item.marca ? item.marca : ''} ${item.modello}`;
+
+        // --- Update Meta Tags ---
+        document.getElementById('page-title').textContent = `${modelName} - Dettagli e Specifiche | E-Bike Ratings`;
+        document.getElementById('page-description').setAttribute('content', `Scopri le specifiche tecniche dettagliate per il componente ${modelName}.`);
+
+        // --- Populate Hero ---
+        document.getElementById('component-model-name').textContent = modelName;
+        const ratingContainer = document.getElementById('component-rating-container');
+        if (item.valutazione) {
+            ratingContainer.innerHTML = `
+                <span>Punteggio</span>
+                <div id="component-final-score" class="rating-badge large">${item.valutazione}</div>
+            `;
+        } else {
+            ratingContainer.innerHTML = '';
+        }
+
+        // --- Populate Specs List ---
+        const specsList = document.getElementById('component-specs-list');
+        specsList.innerHTML = ''; // Clear
+        const excludedKeys = ['id', 'posizione', 'modello', 'marca', 'valutazione', 'analisi', 'fonte_url'];
+
+        for (const [key, value] of Object.entries(item)) {
+            if (!excludedKeys.includes(key) && value !== null && value !== undefined) {
+                specsList.innerHTML += `
+                    <li>
+                        <strong>${formatHeader(key)}:</strong>
+                        <span>${value}</span>
+                    </li>`;
+            }
+        }
+        // Add a link to the source if it exists
+        if(item.fonte_url) {
+             specsList.innerHTML += `
+                    <li>
+                        <strong>Fonte:</strong>
+                        <span><a href="${item.fonte_url}" target="_blank" rel="noopener noreferrer">Link al sito del produttore</a></span>
+                    </li>`;
+        }
+
+
+        // --- Populate Analysis Section ---
+        const analysisContainer = document.getElementById('component-analysis-container');
+        if (item.analisi) {
+            analysisContainer.innerHTML = `
+                <h2>Analisi del Componente</h2>
+                <p>${item.analisi}</p>
+            `;
+            analysisContainer.style.display = 'block';
+        } else {
+            analysisContainer.innerHTML = '';
+            analysisContainer.style.display = 'none';
+        }
+    }
+
+
+    /************************************************
      * DYNAMIC E-BIKE RANKINGS & DETAIL
      ************************************************/
     const renderEBikeRow = (eBike, allData) => {
@@ -264,14 +487,50 @@ document.addEventListener("DOMContentLoaded", function() {
             }
 
             // Render E-Bike detail page
-            if (document.querySelector('.scheda-ebike-main')) {
+            if (document.getElementById('ebike-model-name')) { // More specific selector
                 const bikeId = getUrlParameter('id');
-                const bikeData = data.e_bikes.find(b => b.id === bikeId);
-                if (bikeData) {
-                    renderEBikeDetail(bikeData, data);
-                } else {
-                    document.querySelector('.scheda-ebike-main').innerHTML = '<h2>E-Bike non trovata</h2>';
+                if (bikeId) {
+                    const bikeData = data.e_bikes.find(b => b.id === bikeId);
+                    if (bikeData) {
+                        renderEBikeDetail(bikeData, data);
+                    } else {
+                        document.querySelector('.scheda-ebike-main').innerHTML = '<h2>E-Bike non trovata</h2>';
+                    }
                 }
+            }
+
+            // Render Component detail page
+            if (document.getElementById('component-detail-main')) {
+                const type = getUrlParameter('type');
+                const id = getUrlParameter('id');
+
+                if (type && id && data[type]) {
+                    const itemData = data[type].find(item => item.id === id);
+                    if (itemData) {
+                        renderComponentDetail(type, itemData);
+                    } else {
+                        document.getElementById('component-detail-main').innerHTML = '<h2>Componente non trovato</h2>';
+                    }
+                } else {
+                     document.getElementById('component-detail-main').innerHTML = '<h2>Parametri non validi o mancanti per caricare il componente.</h2>';
+                }
+            }
+
+            // Comparison Page Logic
+            const comparisonContainer = document.getElementById('comparison-table-container');
+            if (comparisonContainer) {
+                const categorySelector = document.getElementById('category-select');
+
+                const updateComparisonView = () => {
+                    const selectedCategory = categorySelector.value;
+                    renderComparisonTable(selectedCategory, data);
+                };
+
+                // Initial render
+                updateComparisonView();
+
+                // Add event listener for changes
+                categorySelector.addEventListener('change', updateComparisonView);
             }
 
             // Render component tables on any page that has them
