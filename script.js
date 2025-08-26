@@ -149,11 +149,11 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         'motori': {
             headers: ['Modello', 'Marca', 'Valutazione', 'Coppia (Nm)', 'Peso (kg)', 'Potenza di Picco (W)', 'Anno Rilascio'],
-            dataKeys: ['modello', 'marca', 'valutazione', 'coppia', 'peso_kg', 'potenza_picco_w', 'anno_rilascio']
+            dataKeys: ['modello', 'marca', 'valutazione', 'coppia_max_nm', 'peso_kg', 'potenza_picco_w', 'anno_rilascio']
         },
         'batterie': {
             headers: ['Modello', 'Marca', 'Valutazione', 'Capacità (Wh)', 'Anno Rilascio'],
-            dataKeys: ['modello', 'marca', 'valutazione', 'capacita', 'anno_rilascio']
+            dataKeys: ['modello', 'marca', 'valutazione', 'capacita_wh', 'anno_rilascio']
         },
         'freni': {
             headers: ['Modello', 'Marca', 'Valutazione', 'Tipo', 'Anno Rilascio'],
@@ -269,9 +269,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
 
                 // Add a rating badge for the 'valutazione' key
-                if (key === 'valutazione' && cellContent !== 'N/D') {
+                if (key === 'valutazione' && cellContent !== 'N/D' && cellContent > 0) {
                     cellContent = `<span class="rating-badge">${cellContent}</span>`;
+                } else if (key === 'valutazione') {
+                    cellContent = 'N/D';
                 }
+
 
                 rowHtml += `<td class="${isFixed ? 'fixed-column model-name' : ''}">${cellContent}</td>`;
             });
@@ -291,6 +294,17 @@ document.addEventListener("DOMContentLoaded", function() {
     /************************************************
      * COMPONENT DETAIL PAGE
      ************************************************/
+    function getComponentType(name) {
+        switch(name) {
+            case 'Motore': return 'motori';
+            case 'Batteria': return 'batterie';
+            case 'Freni': return 'freni';
+            case 'Forcella':
+            case 'Ammortizzatore': return 'sospensioni';
+            default: return '';
+        }
+    }
+
     function renderComponentDetail(type, item) {
         // --- Sanitize and Format Display ---
         const formatHeader = (key) => {
@@ -318,21 +332,24 @@ document.addEventListener("DOMContentLoaded", function() {
                 <span>Punteggio</span>
                 <div id="component-final-score" class="rating-badge large">${item.valutazione}</div>
             `;
+            ratingContainer.style.display = 'flex';
         } else {
             ratingContainer.innerHTML = '';
+            ratingContainer.style.display = 'none';
         }
 
         // --- Populate Specs List ---
         const specsList = document.getElementById('component-specs-list');
         specsList.innerHTML = ''; // Clear
-        const excludedKeys = ['id', 'posizione', 'modello', 'marca', 'valutazione', 'analisi', 'fonte_url'];
+        const excludedKeys = ['id', 'posizione', 'modello', 'marca', 'valutazione', 'note', 'analisi_completa', 'fonte_url', 'analisi'];
+
 
         for (const [key, value] of Object.entries(item)) {
-            if (!excludedKeys.includes(key) && value !== null && value !== undefined) {
+            if (!excludedKeys.includes(key) && value !== null && value !== undefined && value !== '') {
                 specsList.innerHTML += `
                     <li>
                         <strong>${formatHeader(key)}:</strong>
-                        <span>${value}</span>
+                        <span>${Array.isArray(value) ? value.join(', ') : value}</span>
                     </li>`;
             }
         }
@@ -341,17 +358,18 @@ document.addEventListener("DOMContentLoaded", function() {
              specsList.innerHTML += `
                     <li>
                         <strong>Fonte:</strong>
-                        <span><a href="${item.fonte_url}" target="_blank" rel="noopener noreferrer">Link al sito del produttore</a></span>
+                        <span><a href="${item.fonte_url}" target="_blank" rel="noopener noreferrer">Link alla fonte</a></span>
                     </li>`;
         }
 
 
         // --- Populate Analysis Section ---
         const analysisContainer = document.getElementById('component-analysis-container');
-        if (item.analisi) {
+        const analysisText = item.note || item.analisi; // Use 'note' for components, 'analisi' as fallback
+        if (analysisText) {
             analysisContainer.innerHTML = `
                 <h2>Analisi del Componente</h2>
-                <p>${item.analisi}</p>
+                <p>${analysisText}</p>
             `;
             analysisContainer.style.display = 'block';
         } else {
@@ -372,18 +390,25 @@ document.addEventListener("DOMContentLoaded", function() {
         const ammortizzatore = allData.sospensioni.find(s => s.id === eBike.id_ammortizzatore);
 
         const score = calculateCompositeScore(eBike, allData);
+        const scoreBadge = score > 0 ? `<span class="rating-badge">${score}</span>` : 'N/D';
+
+        const getComponentDetails = (comp) => {
+            if (!comp) return 'N/D';
+            const rating = comp.valutazione ? ` (${comp.valutazione})` : '';
+            return `${comp.marca} ${comp.modello}${rating}`;
+        };
 
         return `
             <tr>
-                <td>${eBike.posizione}</td>
+                <td>${eBike.posizione || '-'}</td>
                 <td class="model-name"><a href="${basePath}/classifiche/scheda-ebike.html?id=${eBike.id}">${eBike.modello}</a></td>
-                <td><span class="rating-badge">${score}</span></td>
+                <td>${scoreBadge}</td>
                 <td class="model-summary">
-                    <strong>Motore:</strong> ${motore ? `${motore.marca} ${motore.modello} (${motore.valutazione})` : 'N/D'}<br>
-                    <strong>Batteria:</strong> ${batteria ? `${batteria.marca} ${batteria.modello} (${batteria.valutazione})` : 'N/D'}<br>
-                    <strong>Freni:</strong> ${freni ? `${freni.marca} ${freni.modello} (${freni.valutazione})` : 'N/D'}<br>
-                    <strong>Forcella:</strong> ${forcella ? `${forcella.marca} ${forcella.modello} (${forcella.valutazione})` : 'N/D'}<br>
-                    <strong>Ammortizzatore:</strong> ${ammortizzatore ? `${ammortizzatore.marca} ${ammortizzatore.modello} (${ammortizzatore.valutazione})` : 'N/D'}
+                    <strong>Motore:</strong> ${getComponentDetails(motore)}<br>
+                    <strong>Batteria:</strong> ${getComponentDetails(batteria)}<br>
+                    <strong>Freni:</strong> ${getComponentDetails(freni)}<br>
+                    <strong>Forcella:</strong> ${getComponentDetails(forcella)}<br>
+                    <strong>Ammortizzatore:</strong> ${getComponentDetails(ammortizzatore)}
                 </td>
             </tr>`;
     };
@@ -400,7 +425,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Populate Hero
         document.getElementById('ebike-model-name').textContent = eBike.modello;
-        document.getElementById('ebike-final-score').textContent = score;
+        const scoreElement = document.getElementById('ebike-final-score');
+        const scoreContainer = scoreElement.parentElement;
+        if (score > 0) {
+            scoreElement.textContent = score;
+            scoreContainer.style.display = 'flex';
+        } else {
+            scoreContainer.style.display = 'none';
+        }
+
 
         // Update Meta Tags
         document.getElementById('page-title').textContent = `${eBike.modello} - Recensione e Punteggio | E-Bike Ratings`;
@@ -412,23 +445,32 @@ document.addEventListener("DOMContentLoaded", function() {
         const components = { 'Motore': motore, 'Batteria': batteria, 'Freni': freni, 'Forcella': forcella, 'Ammortizzatore': ammortizzatore };
         for(const [name, component] of Object.entries(components)) {
             if (component) {
+                const ratingBadge = component.valutazione ? `<span class="rating-badge small">${component.valutazione}</span>` : '';
+                const componentType = getComponentType(name);
+                const componentUrl = componentType
+                    ? `${basePath}/classifiche/scheda-componente.html?type=${componentType}&id=${component.id}`
+                    : '#';
+
                 specsList.innerHTML += `
                     <li>
                         <strong>${name}:</strong>
-                        <span>${component.marca} ${component.modello}</span>
-                        <span class="rating-badge small">${component.valutazione}</span>
+                        <a href="${componentUrl}">
+                            <span>${component.marca} ${component.modello}</span>
+                            ${ratingBadge}
+                        </a>
                     </li>`;
             }
         }
 
         // Populate Analysis (assuming it exists in the ebike object, if not, this can be extended)
         const analysisContent = document.getElementById('ebike-analysis-content');
-        if (eBike.analisi) {
-            analysisContent.innerHTML = eBike.analisi;
+        if (eBike.analisi_completa) {
+            analysisContent.innerHTML = `<p>${eBike.analisi_completa}</p>`;
         } else {
             analysisContent.innerHTML = '<p>Nessuna analisi dettagliata disponibile per questo modello.</p>';
         }
     }
+
 
     /************************************************
      * RENDERERS & MAIN DATA LOADING
@@ -437,40 +479,35 @@ document.addEventListener("DOMContentLoaded", function() {
     const renderers = {
         motori: (item) => `
             <tr>
-                <td>${item.posizione}</td>
-                <td class="model-name">${item.marca}</td>
-                <td>${item.modello}</td>
-                <td>${item.coppia} Nm</td>
-                <td>${item.peso_kg} kg</td>
-                <td>${item.potenza_picco_w} W</td>
-                <td><span class="rating-badge">${item.valutazione}</span></td>
-                <td><a href="${item.fonte_url}" target="_blank" rel="noopener noreferrer" class="link-button">Verifica</a></td>
+                <td>${item.posizione || '-'}</td>
+                <td class="model-name"><a href="${basePath}/classifiche/scheda-componente.html?type=motori&id=${item.id}">${item.marca} ${item.modello}</a></td>
+                <td>${item.coppia_max_nm || 'N/D'} Nm</td>
+                <td>${item.peso_kg || 'N/D'} kg</td>
+                <td>${item.potenza_picco_w || 'N/D'} W</td>
+                <td>${item.valutazione ? `<span class="rating-badge">${item.valutazione}</span>` : 'N/D'}</td>
             </tr>`,
         batterie: (item) => `
             <tr>
-                <td>${item.posizione}</td>
-                <td class="model-name">${item.marca}</td>
-                <td>${item.modello}</td>
-                <td>${item.capacita} Wh</td>
-                <td><span class="rating-badge">${item.valutazione}</span></td>
+                <td>${item.posizione || '-'}</td>
+                <td class="model-name"><a href="${basePath}/classifiche/scheda-componente.html?type=batterie&id=${item.id}">${item.marca} ${item.modello}</a></td>
+                <td>${item.capacita_wh || 'N/D'} Wh</td>
+                <td>${item.valutazione ? `<span class="rating-badge">${item.valutazione}</span>` : 'N/D'}</td>
             </tr>`,
         freni: (item) => `
             <tr>
-                <td>${item.posizione}</td>
-                <td class="model-name">${item.marca} ${item.modello}</td>
-                <td>${item.tipo}</td>
-                <td><span class="rating-badge">${item.valutazione}</span></td>
-                <td class="model-summary">${item.analisi}</td>
+                <td>${item.posizione || '-'}</td>
+                <td class="model-name"><a href="${basePath}/classifiche/scheda-componente.html?type=freni&id=${item.id}">${item.marca} ${item.modello}</a></td>
+                <td>${item.tipo || 'N/D'}</td>
+                <td>${item.numero_pistoncini || 'N/D'}</td>
+                <td>${item.valutazione ? `<span class="rating-badge">${item.valutazione}</span>` : 'N/D'}</td>
             </tr>`,
         sospensioni: (item) => `
             <tr>
-                <td>${item.posizione}</td>
-                <td class="model-name">${item.marca}</td>
-                <td>${item.modello}</td>
-                <td>${item.tipo}</td>
+                <td>${item.posizione || '-'}</td>
+                <td class="model-name"><a href="${basePath}/classifiche/scheda-componente.html?type=sospensioni&id=${item.id}">${item.marca} ${item.modello}</a></td>
+                <td>${item.tipo || 'N/D'}</td>
                 <td>${item.escursione_mm ? `${item.escursione_mm} mm` : 'N/A'}</td>
-                <td><span class="rating-badge">${item.valutazione}</span></td>
-                <td class="model-summary">${item.analisi}</td>
+                <td>${item.valutazione ? `<span class="rating-badge">${item.valutazione}</span>` : 'N/D'}</td>
             </tr>`
     };
 
