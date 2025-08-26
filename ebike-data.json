@@ -83,5 +83,40 @@
       "capacita": 700,
       "valutazione": 9.2
     }
+  ],
+  "e_bikes": [
+    {
+      "posizione": 1,
+      "modello": "Orbea WILD M-LTD 2024",
+      "punteggio_finale": 9.4,
+      "motore": "Bosch Perf. CX-R",
+      "motore_valutazione": 9.5,
+      "batteria": "Bosch PT 625Wh",
+      "batteria_valutazione": 9.0,
+      "freni": "SRAM Code Ultimate",
+      "freni_valutazione": 9.3
+    },
+    {
+      "posizione": 2,
+      "modello": "Trek Rail 9.9 X0 AXS T4 Gen4 2024",
+      "punteggio_finale": 9.3,
+      "motore": "Bosch Perf. CX",
+      "motore_valutazione": 9.2,
+      "batteria": "Bosch PT 750Wh",
+      "batteria_valutazione": 9.3,
+      "freni": "SRAM Code (variabile)",
+      "freni_valutazione": null
+    },
+    {
+      "posizione": 3,
+      "modello": "Specialized Turbo Levo Expert 2024",
+      "punteggio_finale": 9.1,
+      "motore": "Specialized Turbo 2.2",
+      "motore_valutazione": 8.8,
+      "batteria": "Specialized 700Wh",
+      "batteria_valutazione": 9.1,
+      "freni": "SRAM Code RS",
+      "freni_valutazione": 9.3
+    }
   ]
 }

@@ -104,4 +104,79 @@ document.addEventListener("DOMContentLoaded", function() {
             motoriTableBody.innerHTML += row;
         });
     }
+
+    /************************************************
+     * DYNAMIC BATTERY RANKINGS (for componenti.html)
+     ************************************************/
+
+    const batterieTableBody = document.querySelector('#rankings-batterie tbody');
+
+    if (batterieTableBody) {
+        const data_path = `${basePath}/ebike-data.json`;
+
+        fetch(data_path)
+            .then(response => response.json())
+            .then(data => {
+                renderBatterieTable(data.batterie);
+            })
+            .catch(error => console.error('Error loading battery data:', error));
+    }
+
+    function renderBatterieTable(batterie) {
+        batterieTableBody.innerHTML = ''; // Clear existing table rows
+        if (batterie.length === 0) {
+            batterieTableBody.innerHTML = '<tr><td colspan="5">Nessuna batteria trovata.</td></tr>';
+            return;
+        }
+        batterie.forEach(batteria => {
+            const row = `
+                <tr>
+                    <td>${batteria.posizione}</td>
+                    <td class="model-name">${batteria.marca}</td>
+                    <td>${batteria.modello}</td>
+                    <td>${batteria.capacita} Wh</td>
+                    <td><span class="rating-badge">${batteria.valutazione}</span></td>
+                </tr>`;
+            batterieTableBody.innerHTML += row;
+        });
+    }
+
+    /************************************************
+     * DYNAMIC E-BIKE RANKINGS (for index.html)
+     ************************************************/
+
+    const ebikeRankingsBody = document.getElementById('ebike-rankings-body');
+
+    if (ebikeRankingsBody) {
+        const data_path = `${basePath}/ebike-data.json`;
+
+        fetch(data_path)
+            .then(response => response.json())
+            .then(data => {
+                renderEBikeRankings(data.e_bikes);
+            })
+            .catch(error => console.error('Error loading e-bike data:', error));
+    }
+
+    function renderEBikeRankings(eBikes) {
+        ebikeRankingsBody.innerHTML = ''; // Clear existing table rows
+        if (eBikes.length === 0) {
+            ebikeRankingsBody.innerHTML = '<tr><td colspan="4">Nessuna e-bike trovata.</td></tr>';
+            return;
+        }
+        eBikes.forEach(eBike => {
+            const row = `
+                <tr>
+                    <td>${eBike.posizione}</td>
+                    <td class="model-name">${eBike.modello}</td>
+                    <td><span class="rating-badge">${eBike.punteggio_finale}</span></td>
+                    <td class="model-summary">
+                        <strong>Motore:</strong> ${eBike.motore} (${eBike.motore_valutazione})<br>
+                        <strong>Batteria:</strong> ${eBike.batteria} (${eBike.batteria_valutazione})<br>
+                        <strong>Freni:</strong> ${eBike.freni} ${eBike.freni_valutazione ? `(${eBike.freni_valutazione})` : ''}
+                    </td>
+                </tr>`;
+            ebikeRankingsBody.innerHTML += row;
+        });
+    }
 });
