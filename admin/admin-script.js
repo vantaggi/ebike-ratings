@@ -131,6 +131,48 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function generateNewId(items, category) {
+        const prefixMap = {
+            'motori': 'MO',
+            'batterie': 'BA',
+            'freni': 'FR',
+            'sospensioni': 'SU',
+            'e_bikes': 'EB'
+        };
+
+        if (!items || items.length === 0) {
+            const prefix = prefixMap[category] || 'XX';
+            return `${prefix}001`;
+        }
+
+        const sampleId = items[0].id;
+        const prefixMatch = sampleId.match(/^[A-Z_]+/);
+        if (!prefixMatch) {
+            console.error("Could not determine prefix from sample ID:", sampleId);
+            // Fallback for categories with no clear prefix in ID
+            const prefix = prefixMap[category] || 'XX';
+            return `${prefix}001`;
+        }
+        const prefix = prefixMatch[0];
+
+        const numberLength = sampleId.length - prefix.length;
+
+        let maxNumber = 0;
+        items.forEach(item => {
+            if (item.id && item.id.startsWith(prefix)) {
+                const numPart = parseInt(item.id.substring(prefix.length), 10);
+                if (!isNaN(numPart) && numPart > maxNumber) {
+                    maxNumber = numPart;
+                }
+            }
+        });
+
+        const newNumber = maxNumber + 1;
+        const newNumberString = String(newNumber).padStart(numberLength > 0 ? numberLength : 3, '0');
+
+        return `${prefix}${newNumberString}`;
+    }
+
     function handleFormSubmit(event) {
         event.preventDefault();
         if (!currentCategory) {
@@ -162,13 +204,17 @@ document.addEventListener('DOMContentLoaded', () => {
             // Update existing item
             const index = fullData[currentCategory].findIndex(item => item.id === editingId);
             if (index > -1) {
+                // Preserve the original ID
+                newItem.id = fullData[currentCategory][index].id;
                 fullData[currentCategory][index] = { ...fullData[currentCategory][index], ...newItem };
             }
         } else {
             // Add new item
-            const newId = fullData[currentCategory].length > 0
-                ? Math.max(...fullData[currentCategory].map(item => item.id)) + 1
-                : 1;
+            const newId = generateNewId(fullData[currentCategory], currentCategory);
+            if (!newId) {
+                alert("Errore nella generazione del nuovo ID. Controlla la console.");
+                return;
+            }
             newItem.id = newId;
             fullData[currentCategory].push(newItem);
         }
@@ -178,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleEditClick(event) {
-        const id = parseInt(event.target.dataset.id);
+        const id = event.target.dataset.id; // Use string ID, no parseInt
         editingId = id;
 
         const itemToEdit = fullData[currentCategory].find(item => item.id === id);
@@ -189,7 +235,9 @@ document.addEventListener('DOMContentLoaded', () => {
         formInputs.forEach(input => {
             const key = input.name;
             if (itemToEdit.hasOwnProperty(key)) {
-                input.value = itemToEdit[key];
+                input.value = itemToEdit[key] === undefined ? '' : itemToEdit[key];
+            } else {
+                input.value = '';
             }
         });
 
@@ -200,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleDeleteClick(event) {
-        const id = parseInt(event.target.dataset.id);
+        const id = event.target.dataset.id; // Use string ID, no parseInt
         if (confirm(`Sei sicuro di voler eliminare il componente con ID ${id}?`)) {
             const index = fullData[currentCategory].findIndex(item => item.id === id);
             if (index > -1) {

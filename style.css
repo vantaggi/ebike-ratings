@@ -363,3 +363,107 @@ footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--color-
     border-radius: var(--radius-medium);
     color: var(--color-on-surface);
 }
+
+/************************************************
+ * COMPARISON PAGE (confronta.html)
+ ************************************************/
+
+.comparison-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    background-color: var(--color-surface-container);
+    border-radius: var(--radius-large);
+    align-items: flex-end;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.control-group label {
+    font-weight: 500;
+    color: var(--color-on-surface-variant);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.control-group select {
+    padding: 0.5rem 1rem;
+    background-color: var(--color-surface-container-high);
+    border: 1px solid var(--color-outline);
+    border-radius: var(--radius-medium);
+    color: var(--color-on-surface);
+    font-size: 1rem;
+}
+
+.checkbox-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem; /* row-gap, column-gap */
+}
+
+.checkbox-container label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--color-on-surface);
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+/* Inherit from ratings-table for consistency */
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 24px;
+    /* Required for sticky header/column */
+    overflow-x: auto;
+    display: block;
+}
+.comparison-table th, .comparison-table td {
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-outline-variant);
+    white-space: nowrap;
+}
+.comparison-table thead {
+    background-color: var(--color-surface-container);
+}
+.comparison-table th {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-on-surface);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.comparison-table tbody tr {
+    background-color: var(--color-surface-container-low);
+    transition: background-color 0.3s ease;
+}
+.comparison-table tbody tr:hover {
+    background-color: var(--color-surface-container-highest);
+}
+.comparison-table .fixed-column {
+    position: sticky;
+    left: 0;
+    background-color: var(--color-surface-container-low);
+    z-index: 1;
+    /* Add a subtle shadow to indicate it's layered */
+    box-shadow: 4px 0 8px -4px rgba(0,0,0,0.2);
+}
+.comparison-table tbody tr:hover .fixed-column {
+    background-color: var(--color-surface-container-highest);
+}
+.comparison-table .model-name {
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--color-on-surface);
+}
