@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classifiche Componenti E-Bike - E-Bike Ratings</title>
+    <title id="page-title">Classifiche Componenti E-Bike - E-Bike Ratings</title>
+    <meta id="page-description" name="description" content="Esplora le classifiche dettagliate dei migliori componenti per e-bike: motori, batterie, freni e sospensioni. Confronta le valutazioni e trova il meglio per la tua e-bike.">
     <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -21,6 +22,24 @@
 
             <section id="rankings-motori" data-component-type="motori">
                 <h3>Classifica Motori E-Bike</h3>
+                <div class="filter-controls">
+                    <div class="form-group">
+                        <label for="sort-motori">Ordina per:</label>
+                        <select id="sort-motori">
+                            <option value="posizione">Posizione</option>
+                            <option value="valutazione">Valutazione (Decrescente)</option>
+                            <option value="coppia">Coppia (Decrescente)</option>
+                            <option value="peso_kg">Peso (Crescente)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filter-marca-motori">Marca:</label>
+                        <select id="filter-marca-motori">
+                            <option value="all">Tutte le marche</option>
+                            <!-- Popolato da JS -->
+                        </select>
+                    </div>
+                </div>
                 <div class="table-responsive">
                     <table class="ratings-table">
                         <thead>
@@ -36,7 +55,36 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td colspan="8">Caricamento dati...</td></tr>
+                            <tr>
+                                <td><div class="skeleton" style="height: 24px; width: 24px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 120px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 150px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 80px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 80px;"></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="skeleton" style="height: 24px; width: 24px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 120px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 150px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 80px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 80px;"></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="skeleton" style="height: 24px; width: 24px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 120px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 150px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 80px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 80px;"></div></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -56,13 +104,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td colspan="5">Caricamento dati...</td></tr>
+                            <tr>
+                                <td><div class="skeleton" style="height: 24px; width: 24px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 120px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 150px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 80px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                            </tr>
+                             <tr>
+                                <td><div class="skeleton" style="height: 24px; width: 24px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 120px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 150px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 80px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                            </tr>
+                             <tr>
+                                <td><div class="skeleton" style="height: 24px; width: 24px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 120px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 150px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 80px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </section>
 
-            <section id="rankings-freni" data-component-type="brakes">
+            <section id="rankings-freni" data-component-type="freni">
                 <h3>Classifica Freni E-Bike</h3>
                 <div class="table-responsive">
                     <table class="ratings-table">
@@ -75,13 +143,24 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td colspan="4">Caricamento dati...</td></tr>
+                            <tr>
+                                <td><div class="skeleton" style="height: 24px; width: 24px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 200px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 300px;"></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="skeleton" style="height: 24px; width: 24px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 200px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 300px;"></div></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </section>
 
-            <section id="rankings-sospensioni" data-component-type="suspensions">
+            <section id="rankings-sospensioni" data-component-type="sospensioni">
                 <h3>Classifica Sospensioni E-Bike</h3>
                 <div class="table-responsive">
                     <table class="ratings-table">
@@ -97,7 +176,24 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr><td colspan="7">Caricamento dati...</td></tr>
+                            <tr>
+                                <td><div class="skeleton" style="height: 24px; width: 24px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 120px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 150px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 100px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 80px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 250px;"></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="skeleton" style="height: 24px; width: 24px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 120px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 150px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 100px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 80px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 60px;"></div></td>
+                                <td><div class="skeleton" style="height: 24px; width: 250px;"></div></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
