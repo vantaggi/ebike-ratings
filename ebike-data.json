@@ -104,6 +104,21 @@
       "id_freni": "FR-SHI-XTRM9120",
       "id_trasmissione": null,
       "analisi_completa": "Spinge ulteriormente i confini della leggerezza, con il modello di punta che pesa solo 15.5 kg. Si colloca a cavallo tra il trail e il cross-country, offrendo un'efficienza di pedalata e un peso senza pari, a scapito di una parte della capacità discesistica dei suoi concorrenti più aggressivi."
+    },
+    {
+      "id": "EB-CANN-MOTERRA-2023",
+      "marca": "Cannondale",
+      "modello": "Moterra LT Carbon 1",
+      "anno": 2023,
+      "categoria": "Enduro",
+      "prezzo_listino_eur": 8999,
+      "id_motore": "MO-BOS-PXC4",
+      "id_batteria": "BA-BOS-PT750",
+      "id_forcella": "SU-ROC-ZEBU",
+      "id_ammortizzatore": "SU-ROC-SDURT3",
+      "id_freni": "FR-MAG-MT7",
+      "id_trasmissione": "TR-SRA-X01E",
+      "analisi_completa": "La Moterra LT è una e-bike da enduro progettata per affrontare i terreni più impegnativi. La sua geometria \"Proportional Response\" adatta il layout della sospensione a ogni taglia di telaio, garantendo prestazioni ottimali per ogni ciclista. Il telaio in carbonio e il potente motore Bosch la rendono una macchina da gara."
     }
   ],
   "motori": [
@@ -784,7 +799,38 @@
         "Compressione LSC",
         "Ritorno"
       ]
+    },
+    {
+      "id": "SU-ROC-ZEBU",
+      "marca": "RockShox",
+      "modello": "ZEB Ultimate",
+      "anno_rilascio": 2022,
+      "valutazione": null,
+      "prezzo_medio_eur": 1100,
+      "note": "Top di gamma della serie ZEB, con ammortizzatore Charger 3 RC2 e tecnologia ButterCup per smorzare le vibrazioni.",
+      "fonte_url": "https://www.sram.com/en/rockshox/models/fs-zeb-ult-c3",
+      "tipo": "Forcella",
+      "escursione_mm": 170,
+      "diametro_steli_mm": 38,
+      "regolazioni": [
+        "Compressione HSC/LSC",
+        "Ritorno"
+      ]
     }
   ],
-  "trasmissioni": []
+  "trasmissioni": [
+    {
+      "id": "TR-SRA-X01E",
+      "marca": "SRAM",
+      "modello": "X01 Eagle AXS",
+      "anno_rilascio": 2019,
+      "valutazione": null,
+      "prezzo_medio_eur": 800,
+      "note": "Trasmissione elettronica wireless di alta gamma, nota per la sua cambiata precisa e affidabile.",
+      "fonte_url": "https://www.sram.com/en/sram/mountain/series/x01-eagle-axs",
+      "tipo": "Elettronico",
+      "velocita": 12,
+      "compatibilita_e_bike": true
+    }
+  ]
 }

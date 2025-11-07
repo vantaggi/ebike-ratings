@@ -1,11 +1,13 @@
+require('dotenv').config();
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs');
+const SerpApi = require("google-search-results-nodejs");
 
 // --- CONFIGURATION ---
 const DATA_FILE_PATH = './ebike-data.json';
-const OUTPUT_FILE_PATH = './ebike-data-updated.json'; // To avoid overwriting original data during development
-const CATEGORY_TO_PROCESS = 'motori';
+const OUTPUT_FILE_PATH = './ebike-data.json'; // To avoid overwriting original data during development
+const COMPONENT_CATEGORIES = ['motori', 'batterie', 'freni', 'sospensioni', 'trasmissioni'];
 // Simple cache to avoid re-fetching the same URL within a single run
 const urlCache = new Map();
 
@@ -115,23 +117,24 @@ async function scrapeUrlForRating(url) {
  * @param {string} query The search query.
  * @returns {Promise<string[]>} A list of relevant URLs.
  */
-async function searchForReviews(query) {
-    console.log(`  - Searching Google for: "${query}"`);
-    // This is a placeholder for a real Google Search API call.
-    // In a real scenario, you would use the googleapis library or a similar service.
-    const mockResults = {
-        'Bosch Performance Line CX (Gen4) review': [
-            'https://ebike-mtb.com/en/bosch-performance-line-cx-review/',
-            'https://emountainbikekings.com/reviews/bosch-performance-line-cx-gen-4/',
-            'https://www.bikeradar.com/advice/buyers-guides/bosch-ebike-motors'
-        ],
-        'Shimano EP8 (EP801) review': [
-            'https://ebike-mtb.com/en/shimano-ep801-review/',
-            'https://www.emtb-news.de/news/shimano-ep8-test/'
-        ]
-    };
+function searchForReviews(query) {
+    return new Promise((resolve, reject) => {
+        console.log(`  - Searching Google for: "${query}"`);
+        const search = new SerpApi.GoogleSearch(process.env.SERPAPI_API_KEY);
+        const params = {
+            q: query,
+            engine: "google"
+        };
 
-    return mockResults[query] || [];
+        search.json(params, (data) => {
+            if (data && data.organic_results) {
+                resolve(data.organic_results.slice(0, 5).map(result => result.link));
+            } else {
+                console.error(`  - Google Search failed for "${query}":`, data.error);
+                resolve([]);
+            }
+        });
+    });
 }
 
 
@@ -141,16 +144,19 @@ async function main() {
     console.log("Starting the data aggregation process...");
 
     const allData = readDataFile();
-    const itemsToProcess = allData[CATEGORY_TO_PROCESS];
 
-    if (!itemsToProcess) {
-        console.error(`Error: Category "${CATEGORY_TO_PROCESS}" not found in the data file.`);
-        return;
-    }
+    for (const category of COMPONENT_CATEGORIES) {
+        const itemsToProcess = allData[category];
 
-    console.log(`Found ${itemsToProcess.length} items in category "${CATEGORY_TO_PROCESS}".`);
+        if (!itemsToProcess) {
+            console.warn(`Warning: Category "${category}" not found in the data file. Skipping.`);
+            continue;
+        }
 
-    for (const item of itemsToProcess) {
+        console.log(`\n--- Processing category: ${category.toUpperCase()} ---`);
+        console.log(`Found ${itemsToProcess.length} items.`);
+
+        for (const item of itemsToProcess) {
         const itemName = `${item.marca} ${item.modello}`;
         console.log(`\nProcessing: ${itemName} (ID: ${item.id})`);
 
@@ -186,6 +192,7 @@ async function main() {
             item.valutazione = "N/A";
             console.log("  - FAILED: Could not find any ratings after checking URLs.");
         }
+    }
     }
 
     // --- SAVE RESULTS ---
