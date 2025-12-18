@@ -467,3 +467,52 @@ footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--color-
     font-size: 1.1rem;
     color: var(--color-on-surface);
 }
+
+/************************************************
+ * BACK TO TOP BUTTON
+ ************************************************/
+
+.back-to-top {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.back-to-top:hover {
+    background-color: var(--color-primary-container);
+    color: var(--color-on-primary-container);
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.back-to-top:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--color-primary-container);
+}
+
+.back-to-top svg {
+    width: 24px;
+    height: 24px;
+}
