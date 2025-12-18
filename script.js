@@ -33,7 +33,27 @@ document.addEventListener("DOMContentLoaded", function() {
         loadTemplate(`${basePath}/header.html`, headerPlaceholder, () => adjustNavigation(isSubfolder));
     }
     if (footerPlaceholder) {
-        loadTemplate(`${basePath}/footer.html`, footerPlaceholder);
+        loadTemplate(`${basePath}/footer.html`, footerPlaceholder, initBackToTop);
+    }
+
+    function initBackToTop() {
+        const backToTopButton = document.getElementById('back-to-top');
+        if (!backToTopButton) return;
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
     }
 
     function adjustNavigation(isInSubfolder) {
