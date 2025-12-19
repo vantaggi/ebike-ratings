@@ -87,9 +87,10 @@ document.addEventListener("DOMContentLoaded", function() {
             tableBody.innerHTML = `<tr><td colspan="${colspan}">Nessun dato trovato.</td></tr>`;
             return;
         }
-        items.forEach(item => {
-            tableBody.innerHTML += renderer(item);
-        });
+        // ⚡ Bolt Optimization: Batch DOM updates to prevent layout thrashing
+        // Instead of appending to innerHTML in each iteration, we build the string once.
+        const rows = items.map(item => renderer(item)).join('');
+        tableBody.innerHTML = rows;
     }
 
     /************************************************
