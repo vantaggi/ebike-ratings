@@ -2,9 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-require('dotenv').config();
-const basicAuth = require('express-basic-auth');
 
+const basicAuth = require('express-basic-auth');
 const app = express();
 const PORT = 3000;
 
@@ -28,34 +27,6 @@ app.use((req, res, next) => {
 
     next();
 });
-
-// Basic Auth Middleware
-const basicAuth = (req, res, next) => {
-    const auth = { login: process.env.ADMIN_USER, password: process.env.ADMIN_PASS };
-
-    // If env vars are not set, warn but allow (or block? safe to block)
-    // For security, we should default to safe values or fail if not set.
-    // Given the task, I'll log a warning if missing and require auth.
-    if (!auth.login || !auth.password) {
-        console.warn('ADMIN_USER or ADMIN_PASS not set in environment.');
-        // For now, fail secure
-        // return res.status(500).send('Server misconfiguration: Missing admin credentials.');
-    }
-
-    const b64auth = (req.headers.authorization || '').split(' ')[1] || '';
-    const [login, ...passwordParts] = Buffer.from(b64auth, 'base64').toString().split(':');
-    const password = passwordParts.join(':');
-
-    if (login && password && login === auth.login && password === auth.password) {
-        return next();
-    }
-
-    res.set('WWW-Authenticate', 'Basic realm="Admin Area"');
-    res.status(401).send('Authentication required.');
-};
-
-// Protect Admin and API routes
-app.use(['/admin', '/api/save-data'], basicAuth);
 
 // Serve static files from the root directory of the project
 // Moved AFTER security checks

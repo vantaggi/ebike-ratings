@@ -1,5 +1,5 @@
 node_modules
-.env
+
 server.log
 ebike-data-updated.json
 ebike-data.json.bak
