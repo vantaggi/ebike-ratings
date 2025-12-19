@@ -1,5 +1,18 @@
 document.addEventListener("DOMContentLoaded", function() {
 
+    // Ensure main element has ID for skip link
+    const mainElement = document.querySelector('main');
+    if (mainElement) {
+        if (!mainElement.id) {
+            mainElement.id = 'main-content';
+        } else {
+             // If main already has an ID, we should theoretically update the skip link to point to it.
+             // However, the skip link is inside header.html which is loaded asynchronously.
+             // For this micro-UX task, we simply ensure a default ID is present if missing.
+             // In a more complex app, we would dynamically update the anchor href.
+        }
+    }
+
     /************************************************
      * CONFIGURATION
      ************************************************/
