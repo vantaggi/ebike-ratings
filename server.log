@@ -1,6 +1,0 @@
-
-> ebike-data-admin@1.0.0 start
-> node server.js
-
-Server is running on http://localhost:3000
-Admin panel should be available at http://localhost:3000/admin/
