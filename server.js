@@ -1,6 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const basicAuth = require('express-basic-auth');
 
 const app = express();
 const PORT = 3000;
@@ -8,16 +10,35 @@ const PORT = 3000;
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-// Serve static files from the root directory of the project
-app.use(express.static(path.join(__dirname, '')));
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
 
-// The admin panel is served because it's in a subdirectory of the root
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin', 'index.html'));
+// Ensure admin credentials are set
+const adminUser = process.env.ADMIN_USER;
+const adminPass = process.env.ADMIN_PASS;
+
+if (!adminUser || !adminPass) {
+    console.error("FATAL ERROR: ADMIN_USER and ADMIN_PASS environment variables must be set.");
+    process.exit(1);
+}
+
+// Basic Authentication Middleware
+const authMiddleware = basicAuth({
+    users: { [adminUser]: adminPass },
+    challenge: true,
+    realm: 'Admin Area'
+});
+
+// Protect Admin Panel and API
+app.use('/admin', authMiddleware, express.static(path.join(__dirname, 'admin')));
+
+// Serve the ebike-data.json file explicitly
+app.get('/ebike-data.json', (req, res) => {
+    res.sendFile(path.join(__dirname, 'ebike-data.json'));
 });
 
 // API endpoint to save the data
-app.post('/api/save-data', (req, res) => {
+app.post('/api/save-data', authMiddleware, (req, res) => {
     const newData = req.body;
 
     if (!newData || Object.keys(newData).length === 0) {
@@ -40,5 +61,5 @@ app.post('/api/save-data', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
-    console.log(`Admin panel should be available at http://localhost:${PORT}/admin/`);
+    console.log(`Admin panel is available at http://localhost:${PORT}/admin/`);
 });
