@@ -16,8 +16,9 @@
                 <p>Esplora le nostre classifiche dettagliate per ogni categoria di componente. Usa la barra di ricerca per filtrare i risultati in tempo reale.</p>
             </section>
             
-            <section id="search-section">
-                <input type="text" id="component-search" placeholder="Cerca per marca o modello di motore...">
+            <section id="search-section" role="search" aria-label="Cerca componenti">
+                <label for="component-search" class="sr-only">Cerca componenti</label>
+                <input type="search" id="component-search" placeholder="Cerca per marca o modello di motore...">
             </section>
 
             <section id="rankings-motori" data-component-type="motori">
