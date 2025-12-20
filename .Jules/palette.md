@@ -5,3 +5,9 @@
 ## 2024-05-24 - Handling Existing IDs
 **Learning:** When retrofitting accessibility (like assigning IDs for skip links), check for existing IDs to avoid overwriting them. If an ID exists, the skip link's target must match it. In async loading scenarios (header loaded later), this requires synchronization which can be complex.
 **Action:** Always check `if (!element.id)` before assigning a default ID.
+## 2025-10-14 - Search Landmark Accessibility
+**Learning:** Adding a  landmark and a properly associated (even if hidden) label to a search input significantly improves the experience for screen reader users, allowing them to quickly locate and understand the search functionality.
+**Action:** Always check for  on search forms and ensure inputs have accessible labels, using  if a visible label is not desired.
+## 2025-10-14 - Search Landmark Accessibility
+**Learning:** Adding a `role="search"` landmark and a properly associated (even if hidden) label to a search input significantly improves the experience for screen reader users, allowing them to quickly locate and understand the search functionality.
+**Action:** Always check for `role="search"` on search forms and ensure inputs have accessible labels, using `.sr-only` if a visible label is not desired.
