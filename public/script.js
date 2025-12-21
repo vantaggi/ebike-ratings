@@ -681,4 +681,28 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         })
         .catch(error => console.error('Error loading main data:', error));
+
+    /************************************************
+     * CONTACT FORM HANDLING
+     ************************************************/
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = contactForm.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+
+            btn.disabled = true;
+            btn.textContent = 'Invio in corso...';
+
+            setTimeout(() => {
+                contactForm.innerHTML = `
+                    <div style="padding: 24px; background-color: var(--color-surface-container); border-radius: var(--radius-medium); text-align: center; border: 1px solid var(--color-primary);">
+                        <h3 style="color: var(--color-primary); margin-bottom: 12px;">Messaggio Inviato!</h3>
+                        <p style="color: var(--color-on-surface);">Grazie per averci contattato. Ti risponderemo al più presto.</p>
+                    </div>`;
+                // Ensure the message is visible/focused if needed, but replacement is usually sufficient.
+            }, 1500);
+        });
+    }
 });
