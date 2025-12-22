@@ -614,9 +614,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
             // Search functionality for the components page
             const searchInput = document.getElementById('component-search');
+            const searchAnnouncer = document.getElementById('search-results-announcer');
+
             if (searchInput) {
                 searchInput.addEventListener('keyup', (e) => {
                     const searchTerm = e.target.value.toLowerCase();
+                    let totalResults = 0;
+
                     for (const type in renderers) {
                         const tableBody = document.querySelector(`[data-component-type="${type}"] tbody`);
                         if (tableBody) {
@@ -624,7 +628,12 @@ document.addEventListener("DOMContentLoaded", function() {
                                 (item.marca + " " + item.modello).toLowerCase().includes(searchTerm)
                             );
                             renderComponentTable(tableBody, filteredData, renderers[type]);
+                            totalResults += filteredData.length;
                         }
+                    }
+
+                    if (searchAnnouncer) {
+                        searchAnnouncer.textContent = `${totalResults} risultati trovati`;
                     }
                 });
             }
