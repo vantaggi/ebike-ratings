@@ -13,6 +13,14 @@ const urlCache = new Map();
 
 // --- HELPER FUNCTIONS ---
 
+// Regex to find scores like "8/10", "4.5/5", "95%", "Rating: 9.2"
+const SCORE_PATTERNS = [
+    { regex: /(?:rating|score|punteggio)[:\s]*?(\d{1,2}(?:[.,]\d{1,2})?)\s*\/\s*10/i, scale: 10 }, // 8/10 or 8.5/10
+    { regex: /(?:rating|score|punteggio)[:\s]*?(\d(?:[.,]\d{1,2})?)\s*\/\s*5/i,     scale: 5 },  // 4/5 or 4.5/5
+    { regex: /(\d{1,3})\s*%/i,                                                    scale: 100 }, // 95%
+    { regex: /(\d{1,2}(?:[.,]\d{1,2})?)\s*out of\s*10/i,                             scale: 10 }  // 8.5 out of 10
+];
+
 /**
  * Reads and parses the JSON data file.
  * @returns {object} The parsed JSON data.
@@ -58,25 +66,17 @@ async function getUrlContent(url) {
  * @returns {number|null} A normalized score out of 10, or null if not found.
  */
 function findAndNormalizeScore(text) {
-    // Regex to find scores like "8/10", "4.5/5", "95%", "Rating: 9.2"
-    const scorePatterns = [
-        /(?:rating|score|punteggio)[:\s]*?(\d{1,2}(?:[.,]\d{1,2})?)\s*\/\s*10/i, // 8/10 or 8.5/10
-        /(?:rating|score|punteggio)[:\s]*?(\d(?:[.,]\d{1,2})?)\s*\/\s*5/i,     // 4/5 or 4.5/5
-        /(\d{1,3})\s*%/i,                                                    // 95%
-        /(\d{1,2}(?:[.,]\d{1,2})?)\s*out of\s*10/i                             // 8.5 out of 10
-    ];
-
-    for (const pattern of scorePatterns) {
-        const match = text.match(pattern);
+    for (const { regex, scale } of SCORE_PATTERNS) {
+        const match = text.match(regex);
         if (match && match[1]) {
             const score = parseFloat(match[1].replace(',', '.'));
             if (isNaN(score)) continue;
 
             // Normalize the score to a 1-10 scale
-            if (pattern.source.includes('/ 5')) {
+            if (scale === 5) {
                 return Math.min(score * 2, 10);
             }
-            if (pattern.source.includes('%')) {
+            if (scale === 100) {
                 return Math.min(score / 10, 10);
             }
             return Math.min(score, 10); // Assumes /10 or a direct 1-10 score
