@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
     /************************************************
      * CONFIGURATION
      ************************************************/
+    const BACK_TO_TOP_THRESHOLD = 300;
     const isSubfolder = window.location.pathname.includes('/classifiche/');
     const basePath = isSubfolder ? '..' : '.';
     const dataPath = `${basePath}/ebike-data.json`;
@@ -54,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!backToTopButton) return;
 
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
+            if (window.scrollY > BACK_TO_TOP_THRESHOLD) {
                 backToTopButton.classList.add('visible');
             } else {
                 backToTopButton.classList.remove('visible');
