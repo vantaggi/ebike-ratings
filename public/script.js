@@ -16,6 +16,35 @@ function getComponentType(name) {
 if (typeof document !== 'undefined') {
     document.addEventListener("DOMContentLoaded", function() {
 
+    /**
+     * Safely escapes HTML special characters to prevent XSS.
+     * @param {string} str The string to escape.
+     * @returns {string} The escaped string.
+     */
+    function escapeHTML(str) {
+        if (str === null || str === undefined) return '';
+        const s = String(str);
+        return s.replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+    }
+
+    /**
+     * Basic check for safe URLs to prevent javascript: or other malicious protocols.
+     * @param {string} url The URL to check.
+     * @returns {boolean} True if the URL is safe.
+     */
+    function isSafeUrl(url) {
+        if (!url) return false;
+        const normalizedUrl = url.trim().toLowerCase();
+        return normalizedUrl.startsWith('http://') ||
+               normalizedUrl.startsWith('https://') ||
+               normalizedUrl.startsWith('/') ||
+               normalizedUrl.startsWith('..');
+    }
+
     // Ensure main element has ID for skip link
     const mainElement = document.querySelector('main');
     if (mainElement) {
@@ -296,27 +325,30 @@ if (typeof document !== 'undefined') {
                 // Create link for the first column (Modello)
                 if (isFixed) {
                     const detailUrl = category === 'e_bikes'
-                        ? `${basePath}/classifiche/scheda-ebike.html?id=${item.id}`
-                        : `${basePath}/classifiche/scheda-componente.html?type=${category}&id=${item.id}`;
+                        ? `${basePath}/classifiche/scheda-ebike.html?id=${encodeURIComponent(item.id)}`
+                        : `${basePath}/classifiche/scheda-componente.html?type=${encodeURIComponent(category)}&id=${encodeURIComponent(item.id)}`;
 
                     const linkText = (category !== 'e_bikes' && item.marca)
-                        ? `${item.marca} ${item.modello}`
-                        : item.modello;
+                        ? `${escapeHTML(item.marca)} ${escapeHTML(item.modello)}`
+                        : escapeHTML(item.modello);
 
-                    cellContent = `<a href="${detailUrl}">${linkText}</a>`;
+                    cellContent = `<a href="${escapeHTML(detailUrl)}">${linkText}</a>`;
 
-                } else if (category === 'e_bikes') {
+                } else if (category === 'e_bikes' && ['id_motore', 'id_batteria', 'id_freni'].includes(key)) {
                     // Special rendering for linked components in e-bikes table
                     if (key === 'id_motore') {
                         const motor = allData.motori.find(m => m.id === cellContent);
-                        cellContent = motor ? `${motor.marca} ${motor.modello}` : 'N/D';
+                        cellContent = motor ? `${escapeHTML(motor.marca)} ${escapeHTML(motor.modello)}` : 'N/D';
                     } else if (key === 'id_batteria') {
                         const battery = allData.batterie.find(b => b.id === cellContent);
-                        cellContent = battery ? `${battery.marca} ${battery.modello}` : 'N/D';
+                        cellContent = battery ? `${escapeHTML(battery.marca)} ${escapeHTML(battery.modello)}` : 'N/D';
                     } else if (key === 'id_freni') {
                          const brake = allData.freni.find(f => f.id === cellContent);
-                         cellContent = brake ? `${brake.marca} ${brake.modello}` : 'N/D';
+                         cellContent = brake ? `${escapeHTML(brake.marca)} ${escapeHTML(brake.modello)}` : 'N/D';
                     }
+                } else {
+                    // For all other data cells, including e-bikes general info, escape the content
+                    cellContent = escapeHTML(cellContent);
                 }
 
                 // Add a rating badge for the 'valutazione' key
@@ -362,6 +394,7 @@ if (typeof document !== 'undefined') {
         const modelName = `${item.marca ? item.marca : ''} ${item.modello}`;
 
         // --- Update Meta Tags ---
+        // textContent is safe
         document.getElementById('page-title').textContent = `${modelName} - Dettagli e Specifiche | E-Bike Ratings`;
         document.getElementById('page-description').setAttribute('content', `Scopri le specifiche tecniche dettagliate per il componente ${modelName}.`);
 
@@ -371,7 +404,7 @@ if (typeof document !== 'undefined') {
         if (item.valutazione) {
             ratingContainer.innerHTML = `
                 <span>Punteggio</span>
-                <div id="component-final-score" class="rating-badge large">${item.valutazione}</div>
+                <div id="component-final-score" class="rating-badge large">${escapeHTML(item.valutazione)}</div>
             `;
             ratingContainer.style.display = 'flex';
         } else {
@@ -387,19 +420,22 @@ if (typeof document !== 'undefined') {
 
         for (const [key, value] of Object.entries(item)) {
             if (!excludedKeys.includes(key) && value !== null && value !== undefined && value !== '') {
+                const displayValue = Array.isArray(value)
+                    ? value.map(v => escapeHTML(v)).join(', ')
+                    : escapeHTML(value);
                 specsList.innerHTML += `
                     <li>
-                        <strong>${formatHeader(key)}:</strong>
-                        <span>${Array.isArray(value) ? value.join(', ') : value}</span>
+                        <strong>${escapeHTML(formatHeader(key))}:</strong>
+                        <span>${displayValue}</span>
                     </li>`;
             }
         }
         // Add a link to the source if it exists
-        if(item.fonte_url) {
+        if(item.fonte_url && isSafeUrl(item.fonte_url)) {
              specsList.innerHTML += `
                     <li>
                         <strong>Fonte:</strong>
-                        <span><a href="${item.fonte_url}" target="_blank" rel="noopener noreferrer">Link alla fonte</a></span>
+                        <span><a href="${escapeHTML(item.fonte_url)}" target="_blank" rel="noopener noreferrer">Link alla fonte</a></span>
                     </li>`;
         }
 
@@ -410,7 +446,7 @@ if (typeof document !== 'undefined') {
         if (analysisText) {
             analysisContainer.innerHTML = `
                 <h2>Analisi del Componente</h2>
-                <p>${analysisText}</p>
+                <p>${escapeHTML(analysisText)}</p>
             `;
             analysisContainer.style.display = 'block';
         } else {
@@ -431,18 +467,18 @@ if (typeof document !== 'undefined') {
         const ammortizzatore = allData.sospensioni.find(s => s.id === eBike.id_ammortizzatore);
 
         const score = calculateCompositeScore(eBike, allData);
-        const scoreBadge = score > 0 ? `<span class="rating-badge">${score}</span>` : 'N/D';
+        const scoreBadge = score > 0 ? `<span class="rating-badge">${escapeHTML(score)}</span>` : 'N/D';
 
         const getComponentDetails = (comp) => {
             if (!comp) return 'N/D';
-            const rating = comp.valutazione ? ` (${comp.valutazione})` : '';
-            return `${comp.marca} ${comp.modello}${rating}`;
+            const rating = comp.valutazione ? ` (${escapeHTML(comp.valutazione)})` : '';
+            return `${escapeHTML(comp.marca)} ${escapeHTML(comp.modello)}${rating}`;
         };
 
         return `
             <tr>
-                <td>${eBike.posizione || '-'}</td>
-                <td class="model-name"><a href="${basePath}/classifiche/scheda-ebike.html?id=${eBike.id}">${eBike.modello}</a></td>
+                <td>${escapeHTML(eBike.posizione) || '-'}</td>
+                <td class="model-name"><a href="${basePath}/classifiche/scheda-ebike.html?id=${encodeURIComponent(eBike.id)}">${escapeHTML(eBike.modello)}</a></td>
                 <td>${scoreBadge}</td>
                 <td class="model-summary">
                     <strong>Motore:</strong> ${getComponentDetails(motore)}<br>
@@ -486,17 +522,17 @@ if (typeof document !== 'undefined') {
         const components = { 'Motore': motore, 'Batteria': batteria, 'Freni': freni, 'Forcella': forcella, 'Ammortizzatore': ammortizzatore };
         for(const [name, component] of Object.entries(components)) {
             if (component) {
-                const ratingBadge = component.valutazione ? `<span class="rating-badge small">${component.valutazione}</span>` : '';
+                const ratingBadge = component.valutazione ? `<span class="rating-badge small">${escapeHTML(component.valutazione)}</span>` : '';
                 const componentType = getComponentType(name);
                 const componentUrl = componentType
-                    ? `${basePath}/classifiche/scheda-componente.html?type=${componentType}&id=${component.id}`
+                    ? `${basePath}/classifiche/scheda-componente.html?type=${encodeURIComponent(componentType)}&id=${encodeURIComponent(component.id)}`
                     : '#';
 
                 specsList.innerHTML += `
                     <li>
-                        <strong>${name}:</strong>
-                        <a href="${componentUrl}">
-                            <span>${component.marca} ${component.modello}</span>
+                        <strong>${escapeHTML(name)}:</strong>
+                        <a href="${escapeHTML(componentUrl)}">
+                            <span>${escapeHTML(component.marca)} ${escapeHTML(component.modello)}</span>
                             ${ratingBadge}
                         </a>
                     </li>`;
@@ -506,7 +542,7 @@ if (typeof document !== 'undefined') {
         // Populate Analysis (assuming it exists in the ebike object, if not, this can be extended)
         const analysisContent = document.getElementById('ebike-analysis-content');
         if (eBike.analisi_completa) {
-            analysisContent.innerHTML = `<p>${eBike.analisi_completa}</p>`;
+            analysisContent.innerHTML = `<p>${escapeHTML(eBike.analisi_completa)}</p>`;
         } else {
             analysisContent.innerHTML = '<p>Nessuna analisi dettagliata disponibile per questo modello.</p>';
         }
@@ -520,35 +556,35 @@ if (typeof document !== 'undefined') {
     const renderers = {
         motori: (item) => `
             <tr>
-                <td>${item.posizione || '-'}</td>
-                <td class="model-name"><a href="${basePath}/classifiche/scheda-componente.html?type=motori&id=${item.id}">${item.marca} ${item.modello}</a></td>
-                <td>${item.coppia_max_nm || 'N/D'} Nm</td>
-                <td>${item.peso_kg || 'N/D'} kg</td>
-                <td>${item.potenza_picco_w || 'N/D'} W</td>
-                <td>${item.valutazione ? `<span class="rating-badge">${item.valutazione}</span>` : 'N/D'}</td>
+                <td>${escapeHTML(item.posizione) || '-'}</td>
+                <td class="model-name"><a href="${basePath}/classifiche/scheda-componente.html?type=motori&id=${encodeURIComponent(item.id)}">${escapeHTML(item.marca)} ${escapeHTML(item.modello)}</a></td>
+                <td>${escapeHTML(item.coppia_max_nm) || 'N/D'} Nm</td>
+                <td>${escapeHTML(item.peso_kg) || 'N/D'} kg</td>
+                <td>${escapeHTML(item.potenza_picco_w) || 'N/D'} W</td>
+                <td>${item.valutazione ? `<span class="rating-badge">${escapeHTML(item.valutazione)}</span>` : 'N/D'}</td>
             </tr>`,
         batterie: (item) => `
             <tr>
-                <td>${item.posizione || '-'}</td>
-                <td class="model-name"><a href="${basePath}/classifiche/scheda-componente.html?type=batterie&id=${item.id}">${item.marca} ${item.modello}</a></td>
-                <td>${item.capacita_wh || 'N/D'} Wh</td>
-                <td>${item.valutazione ? `<span class="rating-badge">${item.valutazione}</span>` : 'N/D'}</td>
+                <td>${escapeHTML(item.posizione) || '-'}</td>
+                <td class="model-name"><a href="${basePath}/classifiche/scheda-componente.html?type=batterie&id=${encodeURIComponent(item.id)}">${escapeHTML(item.marca)} ${escapeHTML(item.modello)}</a></td>
+                <td>${escapeHTML(item.capacita_wh) || 'N/D'} Wh</td>
+                <td>${item.valutazione ? `<span class="rating-badge">${escapeHTML(item.valutazione)}</span>` : 'N/D'}</td>
             </tr>`,
         freni: (item) => `
             <tr>
-                <td>${item.posizione || '-'}</td>
-                <td class="model-name"><a href="${basePath}/classifiche/scheda-componente.html?type=freni&id=${item.id}">${item.marca} ${item.modello}</a></td>
-                <td>${item.tipo || 'N/D'}</td>
-                <td>${item.numero_pistoncini || 'N/D'}</td>
-                <td>${item.valutazione ? `<span class="rating-badge">${item.valutazione}</span>` : 'N/D'}</td>
+                <td>${escapeHTML(item.posizione) || '-'}</td>
+                <td class="model-name"><a href="${basePath}/classifiche/scheda-componente.html?type=freni&id=${encodeURIComponent(item.id)}">${escapeHTML(item.marca)} ${escapeHTML(item.modello)}</a></td>
+                <td>${escapeHTML(item.tipo) || 'N/D'}</td>
+                <td>${escapeHTML(item.numero_pistoncini) || 'N/D'}</td>
+                <td>${item.valutazione ? `<span class="rating-badge">${escapeHTML(item.valutazione)}</span>` : 'N/D'}</td>
             </tr>`,
         sospensioni: (item) => `
             <tr>
-                <td>${item.posizione || '-'}</td>
-                <td class="model-name"><a href="${basePath}/classifiche/scheda-componente.html?type=sospensioni&id=${item.id}">${item.marca} ${item.modello}</a></td>
-                <td>${item.tipo || 'N/D'}</td>
-                <td>${item.escursione_mm ? `${item.escursione_mm} mm` : 'N/A'}</td>
-                <td>${item.valutazione ? `<span class="rating-badge">${item.valutazione}</span>` : 'N/D'}</td>
+                <td>${escapeHTML(item.posizione) || '-'}</td>
+                <td class="model-name"><a href="${basePath}/classifiche/scheda-componente.html?type=sospensioni&id=${encodeURIComponent(item.id)}">${escapeHTML(item.marca)} ${escapeHTML(item.modello)}</a></td>
+                <td>${escapeHTML(item.tipo) || 'N/D'}</td>
+                <td>${item.escursione_mm ? `${escapeHTML(item.escursione_mm)} mm` : 'N/A'}</td>
+                <td>${item.valutazione ? `<span class="rating-badge">${escapeHTML(item.valutazione)}</span>` : 'N/D'}</td>
             </tr>`
     };
 
