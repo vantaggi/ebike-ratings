@@ -1,4 +1,20 @@
-document.addEventListener("DOMContentLoaded", function() {
+/**
+ * Maps Italian component names to their English plural identifiers.
+ * This is used for generating correct URLs and selecting data from the correct category.
+ */
+function getComponentType(name) {
+    switch(name) {
+        case 'Motore': return 'motori';
+        case 'Batteria': return 'batterie';
+        case 'Freni': return 'freni';
+        case 'Forcella':
+        case 'Ammortizzatore': return 'sospensioni';
+        default: return '';
+    }
+}
+
+if (typeof document !== 'undefined') {
+    document.addEventListener("DOMContentLoaded", function() {
 
     // Ensure main element has ID for skip link
     const mainElement = document.querySelector('main');
@@ -328,16 +344,6 @@ document.addEventListener("DOMContentLoaded", function() {
     /************************************************
      * COMPONENT DETAIL PAGE
      ************************************************/
-    function getComponentType(name) {
-        switch(name) {
-            case 'Motore': return 'motori';
-            case 'Batteria': return 'batterie';
-            case 'Freni': return 'freni';
-            case 'Forcella':
-            case 'Ammortizzatore': return 'sospensioni';
-            default: return '';
-        }
-    }
 
     function renderComponentDetail(type, item) {
         // --- Sanitize and Format Display ---
@@ -715,3 +721,9 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+}
+
+// Export for testing
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { getComponentType };
+}
