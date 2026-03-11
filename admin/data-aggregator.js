@@ -1,8 +1,4 @@
-require('dotenv').config();
-const axios = require('axios');
-const cheerio = require('cheerio');
 const fs = require('fs');
-const SerpApi = require("google-search-results-nodejs");
 
 // --- CONFIGURATION ---
 const DATA_FILE_PATH = './ebike-data.json';
@@ -15,8 +11,8 @@ const urlCache = new Map();
 
 // Regex to find scores like "8/10", "4.5/5", "95%", "Rating: 9.2"
 const SCORE_PATTERNS = [
-    { regex: /(?:rating|score|punteggio)[:\s]*?(\d{1,2}(?:[.,]\d{1,2})?)\s*\/\s*10/i, scale: 10 }, // 8/10 or 8.5/10
-    { regex: /(?:rating|score|punteggio)[:\s]*?(\d(?:[.,]\d{1,2})?)\s*\/\s*5/i,     scale: 5 },  // 4/5 or 4.5/5
+    { regex: /(?:(?:rating|score|punteggio)[:\s]*)?(\d{1,2}(?:[.,]\d{1,2})?)\s*\/\s*10/i, scale: 10 }, // 8/10 or 8.5/10
+    { regex: /(?:(?:rating|score|punteggio)[:\s]*)?(\d(?:[.,]\d{1,2})?)\s*\/\s*5/i,     scale: 5 },  // 4/5 or 4.5/5
     { regex: /(\d{1,3})\s*%/i,                                                    scale: 100 }, // 95%
     { regex: /(\d{1,2}(?:[.,]\d{1,2})?)\s*out of\s*10/i,                             scale: 10 }  // 8.5 out of 10
 ];
@@ -26,6 +22,7 @@ const SCORE_PATTERNS = [
  * @returns {object} The parsed JSON data.
  */
 function readDataFile() {
+    const fs = require('fs');
     try {
         const fileContent = fs.readFileSync(DATA_FILE_PATH, 'utf8');
         return JSON.parse(fileContent);
@@ -42,9 +39,11 @@ function readDataFile() {
  * @returns {Promise<string|null>} The HTML content or null on error.
  */
 async function getUrlContent(url) {
+    const axios = require('axios');
     if (urlCache.has(url)) {
         return urlCache.get(url);
     }
+    const axios = require('axios');
     try {
         const response = await axios.get(url, {
             headers: {
@@ -91,9 +90,11 @@ function findAndNormalizeScore(text) {
  * @returns {Promise<number|null>} The normalized rating score, or null.
  */
 async function scrapeUrlForRating(url) {
+    const cheerio = require('cheerio');
     const html = await getUrlContent(url);
     if (!html) return null;
 
+    const cheerio = require('cheerio');
     const $ = cheerio.load(html);
     // Search in common elements that might contain a rating
     const searchAreas = ['body', '.rating', '.score', '.review-summary'];
@@ -118,8 +119,10 @@ async function scrapeUrlForRating(url) {
  * @returns {Promise<string[]>} A list of relevant URLs.
  */
 function searchForReviews(query) {
+    const SerpApi = require("google-search-results-nodejs");
     return new Promise((resolve, reject) => {
         console.log(`  - Searching Google for: "${query}"`);
+        const SerpApi = require("google-search-results-nodejs");
         const search = new SerpApi.GoogleSearch(process.env.SERPAPI_API_KEY);
         const params = {
             q: query,
@@ -141,6 +144,7 @@ function searchForReviews(query) {
 // --- MAIN LOGIC ---
 
 async function main() {
+    require('dotenv').config();
     console.log("Starting the data aggregation process...");
 
     const allData = readDataFile();
@@ -192,6 +196,7 @@ async function main() {
     }
 
     // --- SAVE RESULTS ---
+    const fs = require('fs');
     try {
         fs.writeFileSync(OUTPUT_FILE_PATH, JSON.stringify(allData, null, 2), 'utf8');
         console.log(`\nProcess complete. Updated data saved to: ${OUTPUT_FILE_PATH}`);
@@ -200,5 +205,12 @@ async function main() {
     }
 }
 
-// Execute the main function
-main();
+// Export for testing
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { findAndNormalizeScore, SCORE_PATTERNS };
+}
+
+// Execute the main function if run directly
+if (require.main === module) {
+    main();
+}
