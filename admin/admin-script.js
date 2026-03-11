@@ -38,12 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateCategorySelector() {
         const categories = Object.keys(fullData);
         categorySelector.innerHTML = '<option value="">-- Scegli una categoria --</option>';
+        const fragment = document.createDocumentFragment();
         categories.forEach(cat => {
             const option = document.createElement('option');
             option.value = cat;
             option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
-            categorySelector.appendChild(option);
+            fragment.appendChild(option);
         });
+        categorySelector.appendChild(fragment);
     }
 
     function handleCategoryChange() {
@@ -108,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sampleItem = fullData[currentCategory][0];
         const fields = Object.keys(sampleItem);
 
+        const fragment = document.createDocumentFragment();
         fields.forEach(field => {
             if (field === 'id') return; // ID is managed automatically
 
@@ -127,8 +130,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             div.appendChild(label);
             div.appendChild(input);
-            formFields.appendChild(div);
+            fragment.appendChild(div);
         });
+        formFields.appendChild(fragment);
     }
 
     function generateNewId(items, category) {

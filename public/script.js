@@ -146,8 +146,6 @@ if (typeof document !== 'undefined') {
             tableBody.innerHTML = `<tr><td colspan="${colspan}">Nessun dato trovato.</td></tr>`;
             return;
         }
-        // ⚡ Bolt Optimization: Batch DOM updates to prevent layout thrashing
-        // Instead of appending to innerHTML in each iteration, we build the string once.
         const rows = items.map(item => renderer(item)).join('');
         tableBody.innerHTML = rows;
     }
@@ -252,6 +250,7 @@ if (typeof document !== 'undefined') {
         const config = tableConfig[category];
         container.innerHTML = ''; // Clear old checkboxes
 
+        const fragment = document.createDocumentFragment();
         config.headers.forEach((header, index) => {
             // The first column ('Modello') is fixed and cannot be hidden.
             if (index === 0) return;
@@ -265,8 +264,9 @@ if (typeof document !== 'undefined') {
 
             label.appendChild(checkbox);
             label.appendChild(document.createTextNode(header));
-            container.appendChild(label);
+            fragment.appendChild(label);
         });
+        container.appendChild(fragment);
     }
 
     function handleColumnToggle(event) {
@@ -316,6 +316,7 @@ if (typeof document !== 'undefined') {
 
         // Create Body
         const tbody = document.createElement('tbody');
+        let allRowsHtml = '';
         items.forEach(item => {
             let rowHtml = '<tr>';
             config.dataKeys.forEach((key, index) => {
@@ -362,8 +363,9 @@ if (typeof document !== 'undefined') {
                 rowHtml += `<td class="${isFixed ? 'fixed-column model-name' : ''}">${cellContent}</td>`;
             });
             rowHtml += '</tr>';
-            tbody.innerHTML += rowHtml;
+            allRowsHtml += rowHtml;
         });
+        tbody.innerHTML = allRowsHtml;
         table.appendChild(tbody);
 
         container.innerHTML = ''; // Clear previous table
@@ -414,7 +416,7 @@ if (typeof document !== 'undefined') {
 
         // --- Populate Specs List ---
         const specsList = document.getElementById('component-specs-list');
-        specsList.innerHTML = ''; // Clear
+        let specsHtml = '';
         const excludedKeys = ['id', 'posizione', 'modello', 'marca', 'valutazione', 'note', 'analisi_completa', 'fonte_url', 'analisi'];
 
 
@@ -423,7 +425,7 @@ if (typeof document !== 'undefined') {
                 const displayValue = Array.isArray(value)
                     ? value.map(v => escapeHTML(v)).join(', ')
                     : escapeHTML(value);
-                specsList.innerHTML += `
+                specsHtml += `
                     <li>
                         <strong>${escapeHTML(formatHeader(key))}:</strong>
                         <span>${displayValue}</span>
@@ -432,12 +434,13 @@ if (typeof document !== 'undefined') {
         }
         // Add a link to the source if it exists
         if(item.fonte_url && isSafeUrl(item.fonte_url)) {
-             specsList.innerHTML += `
+             specsHtml += `
                     <li>
                         <strong>Fonte:</strong>
                         <span><a href="${escapeHTML(item.fonte_url)}" target="_blank" rel="noopener noreferrer">Link alla fonte</a></span>
                     </li>`;
         }
+        specsList.innerHTML = specsHtml;
 
 
         // --- Populate Analysis Section ---
@@ -518,7 +521,7 @@ if (typeof document !== 'undefined') {
 
         // Populate Key Specs
         const specsList = document.getElementById('ebike-specs-list');
-        specsList.innerHTML = ''; // Clear
+        let specsHtml = '';
         const components = { 'Motore': motore, 'Batteria': batteria, 'Freni': freni, 'Forcella': forcella, 'Ammortizzatore': ammortizzatore };
         for(const [name, component] of Object.entries(components)) {
             if (component) {
@@ -528,7 +531,7 @@ if (typeof document !== 'undefined') {
                     ? `${basePath}/classifiche/scheda-componente.html?type=${encodeURIComponent(componentType)}&id=${encodeURIComponent(component.id)}`
                     : '#';
 
-                specsList.innerHTML += `
+                specsHtml += `
                     <li>
                         <strong>${escapeHTML(name)}:</strong>
                         <a href="${escapeHTML(componentUrl)}">
@@ -538,6 +541,7 @@ if (typeof document !== 'undefined') {
                     </li>`;
             }
         }
+        specsList.innerHTML = specsHtml;
 
         // Populate Analysis (assuming it exists in the ebike object, if not, this can be extended)
         const analysisContent = document.getElementById('ebike-analysis-content');
@@ -689,12 +693,14 @@ if (typeof document !== 'undefined') {
             if (sortMotori && filterMarcaMotori && motoriTableBody) {
                 // Populate brand filter
                 const motorBrands = [...new Set(data.motori.map(m => m.marca))];
+                const fragment = document.createDocumentFragment();
                 motorBrands.sort().forEach(brand => {
                     const option = document.createElement('option');
                     option.value = brand;
                     option.textContent = brand;
-                    filterMarcaMotori.appendChild(option);
+                    fragment.appendChild(option);
                 });
+                filterMarcaMotori.appendChild(fragment);
 
                 // Function to apply filters and sort
                 const applyMotorFilters = () => {
