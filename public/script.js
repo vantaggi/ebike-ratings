@@ -13,6 +13,24 @@ function getComponentType(name) {
     }
 }
 
+/**
+ * Debounce function to limit how often a function can be called.
+ * @param {Function} func The function to debounce.
+ * @param {number} wait The number of milliseconds to wait.
+ * @returns {Function} The debounced function.
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 if (typeof document !== 'undefined') {
     document.addEventListener("DOMContentLoaded", function() {
 
@@ -660,7 +678,7 @@ if (typeof document !== 'undefined') {
             const searchAnnouncer = document.getElementById('search-results-announcer');
 
             if (searchInput) {
-                searchInput.addEventListener('keyup', (e) => {
+                const handleSearch = debounce((e) => {
                     const searchTerm = e.target.value.toLowerCase();
                     let totalResults = 0;
 
@@ -678,7 +696,9 @@ if (typeof document !== 'undefined') {
                     if (searchAnnouncer) {
                         searchAnnouncer.textContent = `${totalResults} risultati trovati`;
                     }
-                });
+                }, 250); // 250ms debounce for responsive feel
+
+                searchInput.addEventListener('keyup', handleSearch);
             }
 
             // Filter and Sort functionality for Motors table
@@ -762,5 +782,5 @@ if (typeof document !== 'undefined') {
 
 // Export for testing
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { getComponentType };
+    module.exports = { getComponentType, debounce };
 }
