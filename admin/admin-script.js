@@ -1,4 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
+    /**
+     * Safely escapes HTML special characters to prevent XSS.
+     * @param {string} str The string to escape.
+     * @returns {string} The escaped string.
+     */
+    function escapeHTML(str) {
+        if (str === null || str === undefined) return '';
+        const s = String(str);
+        return s.replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+    }
+
     // Global state variables
     let fullData = {};
     let currentCategory = null;
@@ -38,12 +53,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateCategorySelector() {
         const categories = Object.keys(fullData);
         categorySelector.innerHTML = '<option value="">-- Scegli una categoria --</option>';
+        const fragment = document.createDocumentFragment();
         categories.forEach(cat => {
             const option = document.createElement('option');
             option.value = cat;
             option.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
-            categorySelector.appendChild(option);
+            fragment.appendChild(option);
         });
+        categorySelector.appendChild(fragment);
     }
 
     function handleCategoryChange() {
@@ -75,17 +92,17 @@ document.addEventListener('DOMContentLoaded', () => {
         table.innerHTML = `
             <thead>
                 <tr>
-                    ${headers.map(h => `<th>${h}</th>`).join('')}
+                    ${headers.map(h => `<th>${escapeHTML(h)}</th>`).join('')}
                     <th>Azioni</th>
                 </tr>
             </thead>
             <tbody>
                 ${items.map(item => `
                     <tr>
-                        ${headers.map(h => `<td>${item[h] === undefined ? '' : item[h]}</td>`).join('')}
+                        ${headers.map(h => `<td>${item[h] === undefined ? '' : escapeHTML(item[h])}</td>`).join('')}
                         <td>
-                            <button class="edit-btn" data-id="${item.id}">Modifica</button>
-                            <button class="delete-btn" data-id="${item.id}">Elimina</button>
+                            <button class="edit-btn" data-id="${escapeHTML(item.id)}">Modifica</button>
+                            <button class="delete-btn" data-id="${escapeHTML(item.id)}">Elimina</button>
                         </td>
                     </tr>
                 `).join('')}
@@ -108,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sampleItem = fullData[currentCategory][0];
         const fields = Object.keys(sampleItem);
 
+        const fragment = document.createDocumentFragment();
         fields.forEach(field => {
             if (field === 'id') return; // ID is managed automatically
 
@@ -127,8 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             div.appendChild(label);
             div.appendChild(input);
-            formFields.appendChild(div);
+            fragment.appendChild(div);
         });
+        formFields.appendChild(fragment);
     }
 
     function generateNewId(items, category) {
