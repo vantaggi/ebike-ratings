@@ -175,14 +175,10 @@ async function main() {
             continue;
         }
 
-        const ratings = [];
         // Limit to processing the top 3 URLs to be efficient
-        for (const url of reviewUrls.slice(0, 3)) {
-            const rating = await scrapeUrlForRating(url);
-            if (rating !== null) {
-                ratings.push(rating);
-            }
-        }
+        const ratingPromises = reviewUrls.slice(0, 3).map(url => scrapeUrlForRating(url));
+        const resolvedRatings = await Promise.all(ratingPromises);
+        const ratings = resolvedRatings.filter(rating => rating !== null);
 
         if (ratings.length > 0) {
             const averageRating = ratings.reduce((sum, r) => sum + r, 0) / ratings.length;
