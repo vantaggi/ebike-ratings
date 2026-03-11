@@ -4,8 +4,13 @@ const path = require('path');
 const fs = require('fs');
 
 const basicAuth = require('express-basic-auth');
+const rateLimit = require('./middleware/rate-limiter');
+
 const app = express();
 const PORT = 3000;
+
+// trust first proxy
+app.set('trust proxy', 1);
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -43,6 +48,12 @@ if (!adminUser || !adminPass) {
     process.exit(1);
 }
 
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: 'Too many authentication attempts from this IP, please try again after 15 minutes.'
+});
+
 // Basic Authentication Middleware
 const authMiddleware = basicAuth({
     users: { [adminUser]: adminPass },
@@ -51,7 +62,7 @@ const authMiddleware = basicAuth({
 });
 
 // Protect Admin Panel and API
-app.use('/admin', authMiddleware, express.static(path.join(__dirname, 'admin')));
+app.use('/admin', authLimiter, authMiddleware, express.static(path.join(__dirname, 'admin')));
 
 // Serve the ebike-data.json file explicitly
 app.get('/ebike-data.json', (req, res) => {
@@ -59,7 +70,7 @@ app.get('/ebike-data.json', (req, res) => {
 });
 
 // API endpoint to save the data
-app.post('/api/save-data', authMiddleware, (req, res) => {
+app.post('/api/save-data', authLimiter, authMiddleware, (req, res) => {
     const newData = req.body;
 
     if (!newData || Object.keys(newData).length === 0) {
