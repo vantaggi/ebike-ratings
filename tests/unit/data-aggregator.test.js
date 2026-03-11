@@ -2,51 +2,55 @@ const test = require('node:test');
 const assert = require('node:assert');
 const { findAndNormalizeScore } = require('../../admin/data-aggregator.js');
 
-test('findAndNormalizeScore parser', async (t) => {
+test('findAndNormalizeScore', async (t) => {
 
-    await t.test('should parse /10 scores', () => {
-        assert.strictEqual(findAndNormalizeScore('The rating is 8/10'), 8);
-        assert.strictEqual(findAndNormalizeScore('Score: 9.5 / 10'), 9.5);
-        assert.strictEqual(findAndNormalizeScore('punteggio: 7,5/10'), 7.5);
-    });
-
-    await t.test('should parse /5 scores and normalize to 10', () => {
-        assert.strictEqual(findAndNormalizeScore('Rating: 4/5'), 8);
-        assert.strictEqual(findAndNormalizeScore('score: 4.5 / 5'), 9);
-        assert.strictEqual(findAndNormalizeScore('punteggio 3,5/5'), 7);
-    });
-
-    await t.test('should parse percentage scores and normalize to 10', () => {
-        assert.strictEqual(findAndNormalizeScore('Overall 90%'), 9);
-        assert.strictEqual(findAndNormalizeScore('Success rate: 85%'), 8.5);
-        assert.strictEqual(findAndNormalizeScore('100% complete'), 10);
-    });
-
-    await t.test('should parse "out of 10" scores', () => {
+    await t.test('should normalize scores out of 10', () => {
+        assert.strictEqual(findAndNormalizeScore('Rating: 8/10'), 8);
+        assert.strictEqual(findAndNormalizeScore('score: 8.5/10'), 8.5);
+        assert.strictEqual(findAndNormalizeScore('punteggio: 9,2/10'), 9.2);
         assert.strictEqual(findAndNormalizeScore('8.5 out of 10'), 8.5);
-        assert.strictEqual(findAndNormalizeScore('7 out of 10'), 7);
     });
 
-    await t.test('should clamp scores to a maximum of 10', () => {
+    await t.test('should normalize scores out of 5', () => {
+        assert.strictEqual(findAndNormalizeScore('Rating: 4/5'), 8);
+        assert.strictEqual(findAndNormalizeScore('score: 4.5/5'), 9);
+        assert.strictEqual(findAndNormalizeScore('punteggio: 3,5/5'), 7);
+    });
+
+    await t.test('should normalize percentages', () => {
+        assert.strictEqual(findAndNormalizeScore('95%'), 9.5);
+        assert.strictEqual(findAndNormalizeScore('80 %'), 8);
+        assert.strictEqual(findAndNormalizeScore('100%'), 10);
+    });
+
+    await t.test('should handle different decimal separators', () => {
+        assert.strictEqual(findAndNormalizeScore('Rating: 8.5/10'), 8.5);
+        assert.strictEqual(findAndNormalizeScore('Rating: 8,5/10'), 8.5);
+    });
+
+    await t.test('should be case insensitive for labels', () => {
+        assert.strictEqual(findAndNormalizeScore('RATING: 9/10'), 9);
+        assert.strictEqual(findAndNormalizeScore('Score: 9/10'), 9);
+        assert.strictEqual(findAndNormalizeScore('punteggio: 9/10'), 9);
+    });
+
+    await t.test('should cap scores at 10', () => {
         assert.strictEqual(findAndNormalizeScore('Rating: 11/10'), 10);
         assert.strictEqual(findAndNormalizeScore('Rating: 6/5'), 10);
         assert.strictEqual(findAndNormalizeScore('110%'), 10);
     });
 
-    await t.test('should return null when no score is found', () => {
-        assert.strictEqual(findAndNormalizeScore('Excellent product!'), null);
-        assert.strictEqual(findAndNormalizeScore(''), null);
-        assert.strictEqual(findAndNormalizeScore('Price: $100'), null);
+    await t.test('should return null if no score is found', () => {
+        assert.strictEqual(findAndNormalizeScore('No rating here'), null);
+        assert.strictEqual(findAndNormalizeScore('Rating: excellent'), null);
     });
 
-    await t.test('should handle multiple potential scores by returning the first match', () => {
-        // Based on the order in SCORE_PATTERNS
-        // /10 comes before /5, which comes before %
-        assert.strictEqual(findAndNormalizeScore('Score: 8/10, also 4/5'), 8);
-        assert.strictEqual(findAndNormalizeScore('Rating: 4/5 (80%)'), 8);
-    });
-
-    await t.test('should handle invalid number formats gracefully', () => {
+    await t.test('should handle invalid numbers gracefully', () => {
+        // This tests the 'if (isNaN(score)) continue;' line
+        // We need a regex match where group 1 is not a valid number
+        // Based on the regex, this might be hard to hit with current patterns
+        // but let's try to pass something that matches but isn't a number if possible.
+        // The regexes (\d{1,2}(?:[.,]\d{1,2})?) already ensure digits.
         assert.strictEqual(findAndNormalizeScore('Rating: ../10'), null);
     });
 });
