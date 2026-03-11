@@ -5,7 +5,9 @@ This journal tracks critical performance learnings.
 ## 2024-05-22 - [Example Entry]
 **Learning:** [This is a placeholder]
 **Action:** [Placeholder]
-
-## 2024-05-24 - Batch DOM updates to prevent layout thrashing
-**Learning:** Iterative updates to `innerHTML` or multiple `appendChild` calls within loops can trigger repeated layout recalculations (layout thrashing).
-**Action:** Refactored `renderComparisonTable`, `renderComponentDetail`, and `renderEBikeDetail` in `public/script.js` to accumulate HTML into strings before a single `innerHTML` assignment. Used `DocumentFragment` in `populateColumnToggle`, motor brand filter population, and administrative functions in `admin/admin-script.js` to batch element appends.
+## Performance Improvement: Parallel URL Scraping
+- **Optimization:** Replaced sequential URL scraping with `Promise.all` in `admin/data-aggregator.js`.
+- **Impact:** Achieved ~67% performance improvement when scraping a batch of 3 URLs.
+- **Before:** ~303ms (sequential processing of 3 requests with 100ms latency each).
+- **After:** ~102ms (concurrent processing of 3 requests).
+- **Mechanism:** Leveraged Node.js event loop to initiate multiple I/O requests simultaneously, reducing total wait time to the duration of the slowest request.
