@@ -178,12 +178,24 @@ if (typeof document !== 'undefined') {
         sospensioni: 0.15
     };
 
+    /**
+     * Map-based lookups for components.
+     * Initialized after data is loaded.
+     */
+    let lookupMaps = {
+        motori: new Map(),
+        batterie: new Map(),
+        freni: new Map(),
+        sospensioni: new Map()
+    };
+
     function calculateCompositeScore(eBike, allData) {
-        const motore = allData.motori.find(m => m.id === eBike.id_motore);
-        const batteria = allData.batterie.find(b => b.id === eBike.id_batteria);
-        const freni = allData.freni.find(f => f.id === eBike.id_freni);
-        const forcella = allData.sospensioni.find(s => s.id === eBike.id_forcella);
-        const ammortizzatore = allData.sospensioni.find(s => s.id === eBike.id_ammortizzatore);
+        // ⚡ Bolt Optimization: Use Map-based lookups instead of .find() on arrays
+        const motore = lookupMaps.motori.get(eBike.id_motore);
+        const batteria = lookupMaps.batterie.get(eBike.id_batteria);
+        const freni = lookupMaps.freni.get(eBike.id_freni);
+        const forcella = lookupMaps.sospensioni.get(eBike.id_forcella);
+        const ammortizzatore = lookupMaps.sospensioni.get(eBike.id_ammortizzatore);
 
         let totalScore = 0;
         let totalWeight = 0;
@@ -355,14 +367,15 @@ if (typeof document !== 'undefined') {
 
                 } else if (category === 'e_bikes' && ['id_motore', 'id_batteria', 'id_freni'].includes(key)) {
                     // Special rendering for linked components in e-bikes table
+                    // ⚡ Bolt Optimization: Use Map-based lookups
                     if (key === 'id_motore') {
-                        const motor = allData.motori.find(m => m.id === cellContent);
+                        const motor = lookupMaps.motori.get(cellContent);
                         cellContent = motor ? `${escapeHTML(motor.marca)} ${escapeHTML(motor.modello)}` : 'N/D';
                     } else if (key === 'id_batteria') {
-                        const battery = allData.batterie.find(b => b.id === cellContent);
+                        const battery = lookupMaps.batterie.get(cellContent);
                         cellContent = battery ? `${escapeHTML(battery.marca)} ${escapeHTML(battery.modello)}` : 'N/D';
                     } else if (key === 'id_freni') {
-                         const brake = allData.freni.find(f => f.id === cellContent);
+                         const brake = lookupMaps.freni.get(cellContent);
                          cellContent = brake ? `${escapeHTML(brake.marca)} ${escapeHTML(brake.modello)}` : 'N/D';
                     }
                 } else {
@@ -481,11 +494,12 @@ if (typeof document !== 'undefined') {
      * DYNAMIC E-BIKE RANKINGS & DETAIL
      ************************************************/
     const renderEBikeRow = (eBike, allData) => {
-        const motore = allData.motori.find(m => m.id === eBike.id_motore);
-        const batteria = allData.batterie.find(b => b.id === eBike.id_batteria);
-        const freni = allData.freni.find(f => f.id === eBike.id_freni);
-        const forcella = allData.sospensioni.find(s => s.id === eBike.id_forcella);
-        const ammortizzatore = allData.sospensioni.find(s => s.id === eBike.id_ammortizzatore);
+        // ⚡ Bolt Optimization: Use Map-based lookups
+        const motore = lookupMaps.motori.get(eBike.id_motore);
+        const batteria = lookupMaps.batterie.get(eBike.id_batteria);
+        const freni = lookupMaps.freni.get(eBike.id_freni);
+        const forcella = lookupMaps.sospensioni.get(eBike.id_forcella);
+        const ammortizzatore = lookupMaps.sospensioni.get(eBike.id_ammortizzatore);
 
         const score = calculateCompositeScore(eBike, allData);
         const scoreBadge = score > 0 ? `<span class="rating-badge">${escapeHTML(score)}</span>` : 'N/D';
@@ -513,11 +527,12 @@ if (typeof document !== 'undefined') {
 
     function renderEBikeDetail(eBike, allData) {
         // Find components
-        const motore = allData.motori.find(m => m.id === eBike.id_motore);
-        const batteria = allData.batterie.find(b => b.id === eBike.id_batteria);
-        const freni = allData.freni.find(f => f.id === eBike.id_freni);
-        const forcella = allData.sospensioni.find(s => s.id === eBike.id_forcella);
-        const ammortizzatore = allData.sospensioni.find(s => s.id === eBike.id_ammortizzatore);
+        // ⚡ Bolt Optimization: Use Map-based lookups
+        const motore = lookupMaps.motori.get(eBike.id_motore);
+        const batteria = lookupMaps.batterie.get(eBike.id_batteria);
+        const freni = lookupMaps.freni.get(eBike.id_freni);
+        const forcella = lookupMaps.sospensioni.get(eBike.id_forcella);
+        const ammortizzatore = lookupMaps.sospensioni.get(eBike.id_ammortizzatore);
 
         const score = calculateCompositeScore(eBike, allData);
 
@@ -616,6 +631,12 @@ if (typeof document !== 'undefined') {
             return response.json();
         })
         .then(data => {
+            // Initialize lookup maps
+            lookupMaps.motori = new Map(data.motori.map(m => [m.id, m]));
+            lookupMaps.batterie = new Map(data.batterie.map(b => [b.id, b]));
+            lookupMaps.freni = new Map(data.freni.map(f => [f.id, f]));
+            lookupMaps.sospensioni = new Map(data.sospensioni.map(s => [s.id, s]));
+
             // Render E-Bike table on index.html
             const ebikeRankingsBody = document.getElementById('ebike-rankings-body');
             if (ebikeRankingsBody) {
