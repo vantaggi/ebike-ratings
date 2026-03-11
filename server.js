@@ -10,9 +10,16 @@ const PORT = 3000;
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+// Configure sensitive files to block
+const DEFAULT_SENSITIVE_FILES = '.env,.git,package.json,package-lock.json,server.js,ebike-data.json.bak';
+const sensitiveFilesList = (process.env.SENSITIVE_FILES || DEFAULT_SENSITIVE_FILES)
+    .split(',')
+    .map(file => file.trim())
+    .filter(file => file.length > 0);
+const sensitiveFilesSet = new Set(sensitiveFilesList);
+
 // Security Middleware: Block access to sensitive files
 app.use((req, res, next) => {
-    const sensitiveFiles = ['.env', '.git', 'package.json', 'package-lock.json', 'server.js', 'ebike-data.json.bak'];
     const p = req.path;
 
     // Block dotfiles (like .env, .git/config)
@@ -20,8 +27,9 @@ app.use((req, res, next) => {
         return res.status(403).send('Forbidden');
     }
 
-    // Block specific sensitive files
-    if (sensitiveFiles.some(file => p === '/' + file || p.endsWith('/' + file))) {
+    // Block specific sensitive files by filename
+    const filename = p.split('/').pop();
+    if (filename && sensitiveFilesSet.has(filename)) {
         return res.status(403).send('Forbidden');
     }
 
