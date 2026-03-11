@@ -4,15 +4,27 @@ const path = require('path');
 const fs = require('fs');
 
 const basicAuth = require('express-basic-auth');
+const rateLimit = require('./middleware/rate-limiter');
+
 const app = express();
 const PORT = 3000;
+
+// trust first proxy
+app.set('trust proxy', 1);
 
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+// Configure sensitive files to block
+const DEFAULT_SENSITIVE_FILES = '.env,.git,package.json,package-lock.json,server.js,ebike-data.json.bak';
+const sensitiveFilesList = (process.env.SENSITIVE_FILES || DEFAULT_SENSITIVE_FILES)
+    .split(',')
+    .map(file => file.trim())
+    .filter(file => file.length > 0);
+const sensitiveFilesSet = new Set(sensitiveFilesList);
+
 // Security Middleware: Block access to sensitive files
 app.use((req, res, next) => {
-    const sensitiveFiles = ['.env', '.git', 'package.json', 'package-lock.json', 'server.js', 'ebike-data.json.bak'];
     const p = req.path;
 
     // Block dotfiles (like .env, .git/config)
@@ -20,8 +32,9 @@ app.use((req, res, next) => {
         return res.status(403).send('Forbidden');
     }
 
-    // Block specific sensitive files
-    if (sensitiveFiles.some(file => p === '/' + file || p.endsWith('/' + file))) {
+    // Block specific sensitive files by filename
+    const filename = p.split('/').pop();
+    if (filename && sensitiveFilesSet.has(filename)) {
         return res.status(403).send('Forbidden');
     }
 
@@ -43,6 +56,12 @@ if (!adminUser || !adminPass) {
     process.exit(1);
 }
 
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    message: 'Too many authentication attempts from this IP, please try again after 15 minutes.'
+});
+
 // Basic Authentication Middleware
 const authMiddleware = basicAuth({
     users: { [adminUser]: adminPass },
@@ -51,7 +70,7 @@ const authMiddleware = basicAuth({
 });
 
 // Protect Admin Panel and API
-app.use('/admin', authMiddleware, express.static(path.join(__dirname, 'admin')));
+app.use('/admin', authLimiter, authMiddleware, express.static(path.join(__dirname, 'admin')));
 
 // Serve the ebike-data.json file explicitly
 app.get('/ebike-data.json', (req, res) => {
@@ -59,7 +78,7 @@ app.get('/ebike-data.json', (req, res) => {
 });
 
 // API endpoint to save the data
-app.post('/api/save-data', authMiddleware, async (req, res) => {
+app.post('/api/save-data', authLimiter, authMiddleware, (req, res) => {
     const newData = req.body;
 
     if (!newData || Object.keys(newData).length === 0) {
