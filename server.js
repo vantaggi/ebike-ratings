@@ -88,15 +88,14 @@ app.post('/api/save-data', authLimiter, authMiddleware, (req, res) => {
     const filePath = path.join(__dirname, 'ebike-data.json');
     const fileContent = JSON.stringify(newData, null, 2); // Pretty print
 
-    fs.writeFile(filePath, fileContent, 'utf8', (err) => {
-        if (err) {
-            console.error("Errore durante il salvataggio del file:", err);
-            return res.status(500).json({ message: "Errore interno del server durante il salvataggio." });
-        }
-
+    try {
+        await fs.promises.writeFile(filePath, fileContent, 'utf8');
         console.log("Dati salvati con successo su ebike-data.json");
         res.json({ message: "Dati salvati con successo!" });
-    });
+    } catch (err) {
+        console.error("Errore durante il salvataggio del file:", err);
+        return res.status(500).json({ message: "Errore interno del server durante il salvataggio." });
+    }
 });
 
 app.listen(PORT, () => {
