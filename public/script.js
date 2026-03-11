@@ -13,6 +13,24 @@ function getComponentType(name) {
     }
 }
 
+/**
+ * Debounce function to limit how often a function can be called.
+ * @param {Function} func The function to debounce.
+ * @param {number} wait The number of milliseconds to wait.
+ * @returns {Function} The debounced function.
+ */
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
 if (typeof document !== 'undefined') {
     document.addEventListener("DOMContentLoaded", function() {
 
@@ -146,8 +164,6 @@ if (typeof document !== 'undefined') {
             tableBody.innerHTML = `<tr><td colspan="${colspan}">Nessun dato trovato.</td></tr>`;
             return;
         }
-        // ⚡ Bolt Optimization: Batch DOM updates to prevent layout thrashing
-        // Instead of appending to innerHTML in each iteration, we build the string once.
         const rows = items.map(item => renderer(item)).join('');
         tableBody.innerHTML = rows;
     }
@@ -162,12 +178,24 @@ if (typeof document !== 'undefined') {
         sospensioni: 0.15
     };
 
+    /**
+     * Map-based lookups for components.
+     * Initialized after data is loaded.
+     */
+    let lookupMaps = {
+        motori: new Map(),
+        batterie: new Map(),
+        freni: new Map(),
+        sospensioni: new Map()
+    };
+
     function calculateCompositeScore(eBike, allData) {
-        const motore = allData.motori.find(m => m.id === eBike.id_motore);
-        const batteria = allData.batterie.find(b => b.id === eBike.id_batteria);
-        const freni = allData.freni.find(f => f.id === eBike.id_freni);
-        const forcella = allData.sospensioni.find(s => s.id === eBike.id_forcella);
-        const ammortizzatore = allData.sospensioni.find(s => s.id === eBike.id_ammortizzatore);
+        // ⚡ Bolt Optimization: Use Map-based lookups instead of .find() on arrays
+        const motore = lookupMaps.motori.get(eBike.id_motore);
+        const batteria = lookupMaps.batterie.get(eBike.id_batteria);
+        const freni = lookupMaps.freni.get(eBike.id_freni);
+        const forcella = lookupMaps.sospensioni.get(eBike.id_forcella);
+        const ammortizzatore = lookupMaps.sospensioni.get(eBike.id_ammortizzatore);
 
         let totalScore = 0;
         let totalWeight = 0;
@@ -252,6 +280,7 @@ if (typeof document !== 'undefined') {
         const config = tableConfig[category];
         container.innerHTML = ''; // Clear old checkboxes
 
+        const fragment = document.createDocumentFragment();
         config.headers.forEach((header, index) => {
             // The first column ('Modello') is fixed and cannot be hidden.
             if (index === 0) return;
@@ -265,8 +294,9 @@ if (typeof document !== 'undefined') {
 
             label.appendChild(checkbox);
             label.appendChild(document.createTextNode(header));
-            container.appendChild(label);
+            fragment.appendChild(label);
         });
+        container.appendChild(fragment);
     }
 
     function handleColumnToggle(event) {
@@ -316,6 +346,7 @@ if (typeof document !== 'undefined') {
 
         // Create Body
         const tbody = document.createElement('tbody');
+        let allRowsHtml = '';
         items.forEach(item => {
             let rowHtml = '<tr>';
             config.dataKeys.forEach((key, index) => {
@@ -336,14 +367,15 @@ if (typeof document !== 'undefined') {
 
                 } else if (category === 'e_bikes' && ['id_motore', 'id_batteria', 'id_freni'].includes(key)) {
                     // Special rendering for linked components in e-bikes table
+                    // ⚡ Bolt Optimization: Use Map-based lookups
                     if (key === 'id_motore') {
-                        const motor = allData.motori.find(m => m.id === cellContent);
+                        const motor = lookupMaps.motori.get(cellContent);
                         cellContent = motor ? `${escapeHTML(motor.marca)} ${escapeHTML(motor.modello)}` : 'N/D';
                     } else if (key === 'id_batteria') {
-                        const battery = allData.batterie.find(b => b.id === cellContent);
+                        const battery = lookupMaps.batterie.get(cellContent);
                         cellContent = battery ? `${escapeHTML(battery.marca)} ${escapeHTML(battery.modello)}` : 'N/D';
                     } else if (key === 'id_freni') {
-                         const brake = allData.freni.find(f => f.id === cellContent);
+                         const brake = lookupMaps.freni.get(cellContent);
                          cellContent = brake ? `${escapeHTML(brake.marca)} ${escapeHTML(brake.modello)}` : 'N/D';
                     }
                 } else {
@@ -362,8 +394,9 @@ if (typeof document !== 'undefined') {
                 rowHtml += `<td class="${isFixed ? 'fixed-column model-name' : ''}">${cellContent}</td>`;
             });
             rowHtml += '</tr>';
-            tbody.innerHTML += rowHtml;
+            allRowsHtml += rowHtml;
         });
+        tbody.innerHTML = allRowsHtml;
         table.appendChild(tbody);
 
         container.innerHTML = ''; // Clear previous table
@@ -414,7 +447,7 @@ if (typeof document !== 'undefined') {
 
         // --- Populate Specs List ---
         const specsList = document.getElementById('component-specs-list');
-        specsList.innerHTML = ''; // Clear
+        let specsHtml = '';
         const excludedKeys = ['id', 'posizione', 'modello', 'marca', 'valutazione', 'note', 'analisi_completa', 'fonte_url', 'analisi'];
 
 
@@ -423,7 +456,7 @@ if (typeof document !== 'undefined') {
                 const displayValue = Array.isArray(value)
                     ? value.map(v => escapeHTML(v)).join(', ')
                     : escapeHTML(value);
-                specsList.innerHTML += `
+                specsHtml += `
                     <li>
                         <strong>${escapeHTML(formatHeader(key))}:</strong>
                         <span>${displayValue}</span>
@@ -432,12 +465,13 @@ if (typeof document !== 'undefined') {
         }
         // Add a link to the source if it exists
         if(item.fonte_url && isSafeUrl(item.fonte_url)) {
-             specsList.innerHTML += `
+             specsHtml += `
                     <li>
                         <strong>Fonte:</strong>
                         <span><a href="${escapeHTML(item.fonte_url)}" target="_blank" rel="noopener noreferrer">Link alla fonte</a></span>
                     </li>`;
         }
+        specsList.innerHTML = specsHtml;
 
 
         // --- Populate Analysis Section ---
@@ -460,11 +494,12 @@ if (typeof document !== 'undefined') {
      * DYNAMIC E-BIKE RANKINGS & DETAIL
      ************************************************/
     const renderEBikeRow = (eBike, allData) => {
-        const motore = allData.motori.find(m => m.id === eBike.id_motore);
-        const batteria = allData.batterie.find(b => b.id === eBike.id_batteria);
-        const freni = allData.freni.find(f => f.id === eBike.id_freni);
-        const forcella = allData.sospensioni.find(s => s.id === eBike.id_forcella);
-        const ammortizzatore = allData.sospensioni.find(s => s.id === eBike.id_ammortizzatore);
+        // ⚡ Bolt Optimization: Use Map-based lookups
+        const motore = lookupMaps.motori.get(eBike.id_motore);
+        const batteria = lookupMaps.batterie.get(eBike.id_batteria);
+        const freni = lookupMaps.freni.get(eBike.id_freni);
+        const forcella = lookupMaps.sospensioni.get(eBike.id_forcella);
+        const ammortizzatore = lookupMaps.sospensioni.get(eBike.id_ammortizzatore);
 
         const score = calculateCompositeScore(eBike, allData);
         const scoreBadge = score > 0 ? `<span class="rating-badge">${escapeHTML(score)}</span>` : 'N/D';
@@ -492,11 +527,12 @@ if (typeof document !== 'undefined') {
 
     function renderEBikeDetail(eBike, allData) {
         // Find components
-        const motore = allData.motori.find(m => m.id === eBike.id_motore);
-        const batteria = allData.batterie.find(b => b.id === eBike.id_batteria);
-        const freni = allData.freni.find(f => f.id === eBike.id_freni);
-        const forcella = allData.sospensioni.find(s => s.id === eBike.id_forcella);
-        const ammortizzatore = allData.sospensioni.find(s => s.id === eBike.id_ammortizzatore);
+        // ⚡ Bolt Optimization: Use Map-based lookups
+        const motore = lookupMaps.motori.get(eBike.id_motore);
+        const batteria = lookupMaps.batterie.get(eBike.id_batteria);
+        const freni = lookupMaps.freni.get(eBike.id_freni);
+        const forcella = lookupMaps.sospensioni.get(eBike.id_forcella);
+        const ammortizzatore = lookupMaps.sospensioni.get(eBike.id_ammortizzatore);
 
         const score = calculateCompositeScore(eBike, allData);
 
@@ -518,7 +554,7 @@ if (typeof document !== 'undefined') {
 
         // Populate Key Specs
         const specsList = document.getElementById('ebike-specs-list');
-        specsList.innerHTML = ''; // Clear
+        let specsHtml = '';
         const components = { 'Motore': motore, 'Batteria': batteria, 'Freni': freni, 'Forcella': forcella, 'Ammortizzatore': ammortizzatore };
         for(const [name, component] of Object.entries(components)) {
             if (component) {
@@ -528,7 +564,7 @@ if (typeof document !== 'undefined') {
                     ? `${basePath}/classifiche/scheda-componente.html?type=${encodeURIComponent(componentType)}&id=${encodeURIComponent(component.id)}`
                     : '#';
 
-                specsList.innerHTML += `
+                specsHtml += `
                     <li>
                         <strong>${escapeHTML(name)}:</strong>
                         <a href="${escapeHTML(componentUrl)}">
@@ -538,6 +574,7 @@ if (typeof document !== 'undefined') {
                     </li>`;
             }
         }
+        specsList.innerHTML = specsHtml;
 
         // Populate Analysis (assuming it exists in the ebike object, if not, this can be extended)
         const analysisContent = document.getElementById('ebike-analysis-content');
@@ -594,6 +631,12 @@ if (typeof document !== 'undefined') {
             return response.json();
         })
         .then(data => {
+            // Initialize lookup maps
+            lookupMaps.motori = new Map(data.motori.map(m => [m.id, m]));
+            lookupMaps.batterie = new Map(data.batterie.map(b => [b.id, b]));
+            lookupMaps.freni = new Map(data.freni.map(f => [f.id, f]));
+            lookupMaps.sospensioni = new Map(data.sospensioni.map(s => [s.id, s]));
+
             // Render E-Bike table on index.html
             const ebikeRankingsBody = document.getElementById('ebike-rankings-body');
             if (ebikeRankingsBody) {
@@ -660,7 +703,7 @@ if (typeof document !== 'undefined') {
             const searchAnnouncer = document.getElementById('search-results-announcer');
 
             if (searchInput) {
-                searchInput.addEventListener('keyup', (e) => {
+                const handleSearch = debounce((e) => {
                     const searchTerm = e.target.value.toLowerCase();
                     let totalResults = 0;
 
@@ -678,7 +721,9 @@ if (typeof document !== 'undefined') {
                     if (searchAnnouncer) {
                         searchAnnouncer.textContent = `${totalResults} risultati trovati`;
                     }
-                });
+                }, 250); // 250ms debounce for responsive feel
+
+                searchInput.addEventListener('keyup', handleSearch);
             }
 
             // Filter and Sort functionality for Motors table
@@ -689,12 +734,14 @@ if (typeof document !== 'undefined') {
             if (sortMotori && filterMarcaMotori && motoriTableBody) {
                 // Populate brand filter
                 const motorBrands = [...new Set(data.motori.map(m => m.marca))];
+                const fragment = document.createDocumentFragment();
                 motorBrands.sort().forEach(brand => {
                     const option = document.createElement('option');
                     option.value = brand;
                     option.textContent = brand;
-                    filterMarcaMotori.appendChild(option);
+                    fragment.appendChild(option);
                 });
+                filterMarcaMotori.appendChild(fragment);
 
                 // Function to apply filters and sort
                 const applyMotorFilters = () => {
@@ -762,5 +809,5 @@ if (typeof document !== 'undefined') {
 
 // Export for testing
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { getComponentType };
+    module.exports = { getComponentType, debounce };
 }
