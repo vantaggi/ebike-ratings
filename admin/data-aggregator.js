@@ -1,8 +1,4 @@
-require('dotenv').config();
-const axios = require('axios');
-const cheerio = require('cheerio');
 const fs = require('fs');
-const SerpApi = require("google-search-results-nodejs");
 
 // --- CONFIGURATION ---
 const DATA_FILE_PATH = './ebike-data.json';
@@ -42,6 +38,7 @@ function readDataFile() {
  * @returns {Promise<string|null>} The HTML content or null on error.
  */
 async function getUrlContent(url) {
+    const axios = require('axios');
     if (urlCache.has(url)) {
         return urlCache.get(url);
     }
@@ -91,6 +88,7 @@ function findAndNormalizeScore(text) {
  * @returns {Promise<number|null>} The normalized rating score, or null.
  */
 async function scrapeUrlForRating(url) {
+    const cheerio = require('cheerio');
     const html = await getUrlContent(url);
     if (!html) return null;
 
@@ -118,6 +116,7 @@ async function scrapeUrlForRating(url) {
  * @returns {Promise<string[]>} A list of relevant URLs.
  */
 function searchForReviews(query) {
+    const SerpApi = require("google-search-results-nodejs");
     return new Promise((resolve, reject) => {
         console.log(`  - Searching Google for: "${query}"`);
         const search = new SerpApi.GoogleSearch(process.env.SERPAPI_API_KEY);
@@ -141,6 +140,7 @@ function searchForReviews(query) {
 // --- MAIN LOGIC ---
 
 async function main() {
+    require('dotenv').config();
     console.log("Starting the data aggregation process...");
 
     const allData = readDataFile();
@@ -204,5 +204,12 @@ async function main() {
     }
 }
 
-// Execute the main function
-main();
+// Export for testing
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { findAndNormalizeScore, SCORE_PATTERNS };
+}
+
+// Execute the main function if run directly
+if (require.main === module) {
+    main();
+}
